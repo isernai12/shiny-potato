@@ -9,6 +9,7 @@ import { cookies } from "next/headers";
 import { getUserFromSessionId } from "../lib/auth";
 import { readSettings } from "../lib/data/settings";
 import { Outfit } from "next/font/google";
+import { Github, Facebook, Twitter, Youtube } from "lucide-react";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -52,19 +53,33 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <div className="writoFooterMeta">© {year} • All rights reserved</div>
               </div>
 
-              <div className="writoFooterLinks">
-                <Link className="writoFooterLink" href="/">
-                  Home
-                </Link>
-                <Link className="writoFooterLink" href="/posts">
-                  Posts
-                </Link>
-                <Link className="writoFooterLink" href="/profile">
-                  Profile
-                </Link>
-                <Link className="writoFooterLink" href="/dashboard">
-                  Dashboard
-                </Link>
+              <div className="writoFooterRight">
+                <div className="writoFooterSocial" aria-label="Social links">
+                  {/* TODO: পরে href গুলো তোমার আসল লিংক দিয়ে রিপ্লেস করবে */}
+                  <a className="writoSocialBtn" href="#" target="_blank" rel="noreferrer" aria-label="GitHub">
+                    <Github />
+                  </a>
+                  <a className="writoSocialBtn" href="#" target="_blank" rel="noreferrer" aria-label="Facebook">
+                    <Facebook />
+                  </a>
+                  <a className="writoSocialBtn" href="#" target="_blank" rel="noreferrer" aria-label="X / Twitter">
+                    <Twitter />
+                  </a>
+                  <a className="writoSocialBtn" href="#" target="_blank" rel="noreferrer" aria-label="YouTube">
+                    <Youtube />
+                  </a>
+                </div>
+
+                <div className="writoFooterPolicy">
+                  {/* TODO: পরে /privacy এবং /terms পেজ বানালে ঠিকমতো কাজ করবে */}
+                  <Link className="writoFooterLink" href="/privacy">
+                    Privacy Policy
+                  </Link>
+                  <span className="writoFooterDot">•</span>
+                  <Link className="writoFooterLink" href="/terms">
+                    Terms
+                  </Link>
+                </div>
               </div>
             </div>
           </footer>
