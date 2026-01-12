@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getUserFromSessionId } from "../../../../../../lib/auth";
 import { readPosts } from "../../../../../../lib/data/posts";
 import { readUsers } from "../../../../../../lib/data/users";
+import styles from "./preview.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +22,13 @@ export default async function AdminPostPreview({ params }: { params: { id: strin
   const author = users.records.find((record) => record.id === post.authorUserId);
 
   return (
-    <main className="container stack">
-      <article className="card stack">
-        <h1>{post.title}</h1>
-        <p>By {author?.fullName ?? "Unknown"}</p>
-        <p>Status: {post.status}</p>
-        <p>{post.excerpt}</p>
-        <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>{post.content}</pre>
+    <main className={styles.page}>
+      <article className={styles.card}>
+        <h1 className={styles.title}>{post.title}</h1>
+        <p className={styles.meta}>By {author?.fullName ?? "Unknown"}</p>
+        <p className={styles.status}>Status: {post.status}</p>
+        <p className={styles.excerpt}>{post.excerpt}</p>
+        <pre className={styles.content}>{post.content}</pre>
       </article>
     </main>
   );

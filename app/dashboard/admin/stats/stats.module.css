@@ -1,0 +1,38 @@
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.statValue {
+  font-weight: 600;
+}
+
+.statHint {
+  color: var(--muted);
+  font-size: 14px;
+}

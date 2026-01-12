@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import styles from "./users.module.css";
 
 type User = {
   id: string;
@@ -38,11 +39,11 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <main className="container stack">
-      <h1>User management</h1>
-      {message ? <div className="notice">{message}</div> : null}
-      <div className="card stack">
-        <table className="table">
+    <main className={styles.page}>
+      <h1 className={styles.title}>User management</h1>
+      {message ? <div className={styles.notice}>{message}</div> : null}
+      <div className={styles.card}>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>Name</th>
@@ -58,7 +59,7 @@ export default function AdminUsersPage() {
                 <td>{user.email}</td>
                 <td>{user.suspended ? "Suspended" : "Active"}</td>
                 <td>
-                  <button className="button secondary" onClick={() => toggleSuspend(user)}>
+                  <button className={styles.buttonSecondary} onClick={() => toggleSuspend(user)}>
                     {user.suspended ? "Unsuspend" : "Suspend"}
                   </button>
                 </td>

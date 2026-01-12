@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { readPosts } from "../../../lib/data/posts";
 import { readUsers } from "../../../lib/data/users";
+import styles from "./writer.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -21,37 +22,39 @@ export default async function WriterPublicPage({
   const recent = sorted.slice(0, 5);
 
   return (
-    <main className="container stack">
-      <div className="card writer-profile">
+    <main className={styles.page}>
+      <div className={styles.profileCard}>
         {writer?.avatarUrl ? (
-          <img className="writer-profile__avatar" src={writer.avatarUrl} alt={writer.fullName} />
+          <img className={styles.avatar} src={writer.avatarUrl} alt={writer.fullName} />
         ) : (
-          <div className="writer-profile__avatar writer-profile__avatar--placeholder">
+          <div className={`${styles.avatar} ${styles.avatarPlaceholder}`}>
             {writer?.fullName?.charAt(0) ?? "W"}
           </div>
         )}
-        <div>
-          <h1>{writer?.fullName ?? "Writer"}</h1>
-          <p>Recent posts: {sorted.length}</p>
+        <div className={styles.profileMeta}>
+          <h1 className={styles.title}>{writer?.fullName ?? "Writer"}</h1>
+          <p className={styles.muted}>Recent posts: {sorted.length}</p>
         </div>
       </div>
 
-      <section className="stack">
-        <div className="section-header">
-          <h2>Recent 5 posts</h2>
-          <Link className="button secondary" href={`/writer/${params.id}/posts`}>
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Recent 5 posts</h2>
+          <Link className={styles.buttonSecondary} href={`/writer/${params.id}/posts`}>
             View all
           </Link>
         </div>
         {recent.length === 0 ? (
-          <p>No posts yet.</p>
+          <p className={styles.muted}>No posts yet.</p>
         ) : (
-          <div className="stack">
+          <div className={styles.list}>
             {recent.map((post) => (
-              <div key={post.id} className="card stack">
-                <h3>{post.title}</h3>
-                <p>{post.excerpt}</p>
-                <Link className="button secondary" href={`/post/${post.slug}`}>
+              <div key={post.id} className={styles.card}>
+                <div className={styles.cardBody}>
+                  <h3 className={styles.cardTitle}>{post.title}</h3>
+                  <p className={styles.cardExcerpt}>{post.excerpt}</p>
+                </div>
+                <Link className={styles.buttonSecondary} href={`/post/${post.slug}`}>
                   Read post
                 </Link>
               </div>

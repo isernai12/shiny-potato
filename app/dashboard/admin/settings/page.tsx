@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import styles from "./settings.module.css";
 
 type Settings = {
   maintenanceMode: boolean;
@@ -36,20 +37,21 @@ export default function AdminSettingsPage() {
 
   if (!settings) {
     return (
-      <main className="container">
-        <p>Loading...</p>
+      <main className={styles.page}>
+        <p className={styles.muted}>Loading...</p>
       </main>
     );
   }
 
   return (
-    <main className="container stack">
-      <h1>Admin settings</h1>
-      {message ? <div className="notice">{message}</div> : null}
-      <div className="card stack">
-        <label className="stack" style={{ gap: 4 }}>
-          <span>Maintenance mode</span>
+    <main className={styles.page}>
+      <h1 className={styles.title}>Admin settings</h1>
+      {message ? <div className={styles.notice}>{message}</div> : null}
+      <div className={styles.card}>
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>Maintenance mode</span>
           <input
+            className={styles.checkbox}
             type="checkbox"
             checked={settings.maintenanceMode}
             onChange={(event) =>
@@ -57,9 +59,10 @@ export default function AdminSettingsPage() {
             }
           />
         </label>
-        <label className="stack" style={{ gap: 4 }}>
-          <span>Enable rate limits</span>
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>Enable rate limits</span>
           <input
+            className={styles.checkbox}
             type="checkbox"
             checked={settings.enableRateLimits}
             onChange={(event) =>
@@ -67,9 +70,10 @@ export default function AdminSettingsPage() {
             }
           />
         </label>
-        <label className="stack" style={{ gap: 4 }}>
-          <span>Enable content filters</span>
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>Enable content filters</span>
           <input
+            className={styles.checkbox}
             type="checkbox"
             checked={settings.enableContentFilters}
             onChange={(event) =>

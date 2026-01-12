@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import styles from "./posts.module.css";
 
 type Post = {
   id: string;
@@ -43,14 +44,14 @@ export default function AdminPostReviewPage() {
   }
 
   return (
-    <main className="container stack">
-      <h1>Post review</h1>
-      {message ? <div className="notice">{message}</div> : null}
-      <div className="card stack">
+    <main className={styles.page}>
+      <h1 className={styles.title}>Post review</h1>
+      {message ? <div className={styles.notice}>{message}</div> : null}
+      <div className={styles.card}>
         {posts.length === 0 ? (
-          <p>No pending posts.</p>
+          <p className={styles.muted}>No pending posts.</p>
         ) : (
-          <table className="table">
+          <table className={styles.table}>
             <thead>
               <tr>
                 <th>Title</th>
@@ -66,13 +67,16 @@ export default function AdminPostReviewPage() {
                   <td>{post.title}</td>
                   <td>{post.authorUserId}</td>
                   <td>
-                    <a className="button secondary" href={`/dashboard/admin/posts/${post.id}/preview`}>
+                    <a
+                      className={styles.buttonSecondary}
+                      href={`/dashboard/admin/posts/${post.id}/preview`}
+                    >
                       Preview
                     </a>
                   </td>
                   <td>
                     <input
-                      className="input"
+                      className={styles.input}
                       value={note[post.id] || ""}
                       onChange={(event) =>
                         setNote((prev) => ({ ...prev, [post.id]: event.target.value }))
@@ -80,11 +84,11 @@ export default function AdminPostReviewPage() {
                     />
                   </td>
                   <td>
-                    <div className="stack" style={{ gap: 8 }}>
-                      <button className="button secondary" onClick={() => handleApprove(post.id)}>
+                    <div className={styles.actionStack}>
+                      <button className={styles.buttonSecondary} onClick={() => handleApprove(post.id)}>
                         Approve
                       </button>
-                      <button className="button secondary" onClick={() => handleReject(post.id)}>
+                      <button className={styles.buttonSecondary} onClick={() => handleReject(post.id)}>
                         Reject
                       </button>
                     </div>

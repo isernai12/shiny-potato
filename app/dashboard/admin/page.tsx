@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import styles from "./admin.module.css";
 
 type Stats = {
   totalViews: number;
@@ -54,48 +55,48 @@ export default function AdminDashboardPage() {
   }, []);
 
   return (
-    <main className="container stack">
-      <h1>Admin dashboard</h1>
-      <div className="grid two">
-        <div className="card stack">
-          <h2>Status of site</h2>
-          <p>Total views: {stats?.totalViews ?? 0}</p>
-          <p>Unique visitors: {stats?.uniqueVisitors ?? 0}</p>
-          <p>Uptime: {stats?.uptimeSeconds ?? 0}s</p>
-          <Link className="button secondary" href="/dashboard/admin/stats">
+    <main className={styles.page}>
+      <h1 className={styles.title}>Admin dashboard</h1>
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Status of site</h2>
+          <p className={styles.cardText}>Total views: {stats?.totalViews ?? 0}</p>
+          <p className={styles.cardText}>Unique visitors: {stats?.uniqueVisitors ?? 0}</p>
+          <p className={styles.cardText}>Uptime: {stats?.uptimeSeconds ?? 0}s</p>
+          <Link className={styles.buttonSecondary} href="/dashboard/admin/stats">
             View details
           </Link>
         </div>
-        <div className="card stack">
-          <h2>Post review</h2>
-          <p>Pending posts: {counts.pendingPosts}</p>
-          <Link className="button secondary" href="/dashboard/admin/posts">
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Post review</h2>
+          <p className={styles.cardText}>Pending posts: {counts.pendingPosts}</p>
+          <Link className={styles.buttonSecondary} href="/dashboard/admin/posts">
             Review posts
           </Link>
         </div>
-        <div className="card stack">
-          <h2>Comment reports</h2>
-          <p>Pending reports: {counts.pendingCommentReports}</p>
-          <Link className="button secondary" href="/dashboard/admin/reports/comments">
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Comment reports</h2>
+          <p className={styles.cardText}>Pending reports: {counts.pendingCommentReports}</p>
+          <Link className={styles.buttonSecondary} href="/dashboard/admin/reports/comments">
             Review comments
           </Link>
         </div>
-        <div className="card stack">
-          <h2>Post reports</h2>
-          <p>Pending reports: {counts.pendingPostReports}</p>
-          <Link className="button secondary" href="/dashboard/admin/reports/posts">
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Post reports</h2>
+          <p className={styles.cardText}>Pending reports: {counts.pendingPostReports}</p>
+          <Link className={styles.buttonSecondary} href="/dashboard/admin/reports/posts">
             Review posts
           </Link>
         </div>
       </div>
-      <div className="grid two">
-        <Link className="button secondary" href="/dashboard/admin/users">
+      <div className={styles.linkGrid}>
+        <Link className={styles.buttonSecondary} href="/dashboard/admin/users">
           User management
         </Link>
-        <Link className="button secondary" href="/dashboard/admin/audit">
+        <Link className={styles.buttonSecondary} href="/dashboard/admin/audit">
           Audit log
         </Link>
-        <Link className="button secondary" href="/dashboard/admin/settings">
+        <Link className={styles.buttonSecondary} href="/dashboard/admin/settings">
           Admin settings
         </Link>
       </div>

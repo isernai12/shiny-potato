@@ -1,0 +1,90 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.empty {
+  color: var(--muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.cardMeta {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.cardExcerpt {
+  color: var(--text);
+}
+
+.buttonSecondary {
+  border: 1px solid var(--softBorder);
+  background: transparent;
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.buttonSecondary:hover {
+  background: var(--soft);
+  border-color: transparent;
+}
+
+.pager {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: transparent;
+}
+
+@media (max-width: 640px) {
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

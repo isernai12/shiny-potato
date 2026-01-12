@@ -1,0 +1,62 @@
+.menu {
+  position: relative;
+}
+
+.iconButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--softBorder);
+  background: var(--soft);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.3);
+  display: flex;
+  align-items: stretch;
+  z-index: 1200;
+}
+
+.panel {
+  width: 260px;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.buttonSecondary {
+  border: 1px solid var(--softBorder);
+  background: transparent;
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buttonSecondary:hover {
+  background: var(--soft);
+}

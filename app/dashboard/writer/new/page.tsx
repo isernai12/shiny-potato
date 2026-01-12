@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CATEGORIES } from "../../../../lib/categories";
+import styles from "./new.module.css";
 
 export default function NewPostPage() {
   const router = useRouter();
@@ -31,10 +32,10 @@ export default function NewPostPage() {
 
   if (isAdmin) {
     return (
-      <main className="container stack">
-        <h1>Create new post</h1>
-        <p>Admin accounts cannot create posts.</p>
-        <button className="button secondary" onClick={() => router.push("/dashboard/admin")}>
+      <main className={styles.page}>
+        <h1 className={styles.title}>Create new post</h1>
+        <p className={styles.muted}>Admin accounts cannot create posts.</p>
+        <button className={styles.buttonSecondary} onClick={() => router.push("/dashboard/admin")}>
           Go to admin dashboard
         </button>
       </main>
@@ -100,29 +101,29 @@ export default function NewPostPage() {
   }
 
   return (
-    <main className="container stack">
-      <h1>Create new post</h1>
-      {message ? <div className="notice">{message}</div> : null}
-      {error ? <div className="notice">{error}</div> : null}
-      <form className="card stack" onSubmit={handleCreatePost}>
+    <main className={styles.page}>
+      <h1 className={styles.title}>Create new post</h1>
+      {message ? <div className={styles.notice}>{message}</div> : null}
+      {error ? <div className={styles.noticeError}>{error}</div> : null}
+      <form className={styles.card} onSubmit={handleCreatePost}>
         <input
-          className="input"
+          className={styles.input}
           placeholder="Title"
           value={form.title}
           onChange={(event) => setForm({ ...form, title: event.target.value })}
           required
         />
         <input
-          className="input"
+          className={styles.input}
           placeholder="Excerpt"
           value={form.excerpt}
           onChange={(event) => setForm({ ...form, excerpt: event.target.value })}
           required
         />
-        <label className="stack" style={{ gap: 4 }}>
+        <label className={styles.field}>
           Category
           <select
-            className="select"
+            className={styles.select}
             value={form.category}
             onChange={(event) => setForm({ ...form, category: event.target.value })}
           >
@@ -133,44 +134,43 @@ export default function NewPostPage() {
             ))}
           </select>
         </label>
-        <label className="stack" style={{ gap: 4 }}>
+        <label className={styles.field}>
           Latest Thumbnail
           <input
-            className="input"
+            className={styles.input}
             type="file"
             accept="image/*"
             onChange={(event) => setLatestThumbFile(event.target.files?.[0] ?? null)}
           />
         </label>
-        <label className="stack" style={{ gap: 4 }}>
+        <label className={styles.field}>
           Trending Thumbnail
           <input
-            className="input"
+            className={styles.input}
             type="file"
             accept="image/*"
             onChange={(event) => setTrendingThumbFile(event.target.files?.[0] ?? null)}
           />
         </label>
         <input
-          className="input"
+          className={styles.input}
           placeholder="Tags (comma separated)"
           value={form.tags}
           onChange={(event) => setForm({ ...form, tags: event.target.value })}
         />
         <textarea
-          className="textarea"
+          className={styles.textarea}
           placeholder="Markdown content"
           rows={8}
           value={form.content}
           onChange={(event) => setForm({ ...form, content: event.target.value })}
           required
         />
-        <button className="button" type="submit">
+        <button className={styles.button} type="submit">
           Save draft
         </button>
       </form>
-      <button className="button secondary" onClick={() => router.push("/dashboard/writer")}
-      >
+      <button className={styles.buttonSecondary} onClick={() => router.push("/dashboard/writer")}>
         Back
       </button>
     </main>

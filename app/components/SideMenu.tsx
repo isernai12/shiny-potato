@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ReactNode, useState } from "react";
+import styles from "./sideMenu.module.css";
 
 type SideMenuProps = {
   triggerIcon?: ReactNode;
@@ -11,9 +12,9 @@ export default function SideMenu({ triggerIcon }: SideMenuProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="side-menu">
+    <div className={styles.menu}>
       <button
-        className="icon-button"
+        className={styles.iconButton}
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Open menu"
@@ -21,15 +22,15 @@ export default function SideMenu({ triggerIcon }: SideMenuProps) {
         {triggerIcon ?? "Menu"}
       </button>
       {open ? (
-        <div className="side-menu__backdrop" onClick={() => setOpen(false)}>
+        <div className={styles.backdrop} onClick={() => setOpen(false)}>
           <aside
-            className="side-menu__panel"
+            className={styles.panel}
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="side-menu__header">
+            <div className={styles.header}>
               <strong>Writo</strong>
               <button
-                className="button secondary"
+                className={styles.buttonSecondary}
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
@@ -37,7 +38,7 @@ export default function SideMenu({ triggerIcon }: SideMenuProps) {
                 Close
               </button>
             </div>
-            <nav className="side-menu__links">
+            <nav className={styles.links}>
               <Link href="/" onClick={() => setOpen(false)}>
                 Home
               </Link>

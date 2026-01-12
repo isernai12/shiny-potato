@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./writer.module.css";
 
 type User = {
   id: string;
@@ -37,10 +38,10 @@ export default function WriterDashboard() {
 
   if (user?.role === "admin") {
     return (
-      <main className="container stack">
-        <h1>Writer tools</h1>
-        <p>Admin accounts cannot create posts.</p>
-        <button className="button secondary" onClick={() => router.push("/dashboard/admin")}>
+      <main className={styles.page}>
+        <h1 className={styles.title}>Writer tools</h1>
+        <p className={styles.muted}>Admin accounts cannot create posts.</p>
+        <button className={styles.buttonSecondary} onClick={() => router.push("/dashboard/admin")}>
           Go to admin dashboard
         </button>
       </main>
@@ -50,34 +51,33 @@ export default function WriterDashboard() {
 
   if (!user) {
     return (
-      <main className="container">
-        <p>Please log in.</p>
+      <main className={styles.page}>
+        <p className={styles.muted}>Please log in.</p>
       </main>
     );
   }
 
   return (
-    <main className="container stack">
-      <h1>Writer tools</h1>
-      {message ? <div className="notice">{message}</div> : null}
-      {error ? <div className="notice">{error}</div> : null}
-      <div className="card stack">
-        <h2>Writer workspace</h2>
-        <p>Create and manage your posts from separate pages.</p>
-        <div className="stack" style={{ gap: 8 }}>
-          <button className="button" onClick={() => router.push("/dashboard/writer/new")}>
+    <main className={styles.page}>
+      <h1 className={styles.title}>Writer tools</h1>
+      {message ? <div className={styles.notice}>{message}</div> : null}
+      {error ? <div className={styles.notice}>{error}</div> : null}
+      <div className={styles.card}>
+        <h2 className={styles.sectionTitle}>Writer workspace</h2>
+        <p className={styles.muted}>Create and manage your posts from separate pages.</p>
+        <div className={styles.actionStack}>
+          <button className={styles.button} onClick={() => router.push("/dashboard/writer/new")}>
             Create new post
           </button>
           <button
-            className="button secondary"
+            className={styles.buttonSecondary}
             onClick={() => router.push("/dashboard/writer/posts")}
           >
             Manage posts
           </button>
         </div>
       </div>
-      <button className="button secondary" onClick={() => router.push("/dashboard")}
-      >
+      <button className={styles.buttonSecondary} onClick={() => router.push("/dashboard")}>
         Back to dashboard
       </button>
     </main>
