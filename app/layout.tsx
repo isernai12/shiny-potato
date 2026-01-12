@@ -7,6 +7,14 @@ import Suspended from "./components/Suspended";
 import { cookies } from "next/headers";
 import { getUserFromSessionId } from "../lib/auth";
 import { readSettings } from "../lib/data/settings";
+import { Outfit } from "next/font/google";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["300", "500", "700"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Writo",
@@ -24,7 +32,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const canShowChildren = !isSuspended && !maintenanceBlocked;
 
   return (
-    <html lang="en">
+    <html lang="en" className={outfit.variable}>
       <body>
         <div className="pageBlur">
           <Header />
