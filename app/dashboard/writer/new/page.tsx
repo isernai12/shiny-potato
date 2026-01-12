@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CATEGORIES } from "../../../../lib/categories";
+import styles from "./new-post.module.css";
 
 export default function NewPostPage() {
   const router = useRouter();
@@ -31,10 +32,12 @@ export default function NewPostPage() {
 
   if (isAdmin) {
     return (
-      <main className="container stack">
-        <h1>Create new post</h1>
-        <p>Admin accounts cannot create posts.</p>
-        <button className="button secondary" onClick={() => router.push("/dashboard/admin")}>
+      <main className={styles.page}>
+        <div className={styles.titleBlock}>
+          <h1>Create new post</h1>
+          <p>Admin accounts cannot create posts.</p>
+        </div>
+        <button className={styles.secondaryButton} onClick={() => router.push("/dashboard/admin")}>
           Go to admin dashboard
         </button>
       </main>
@@ -100,29 +103,60 @@ export default function NewPostPage() {
   }
 
   return (
-    <main className="container stack">
-      <h1>Create new post</h1>
-      {message ? <div className="notice">{message}</div> : null}
-      {error ? <div className="notice">{error}</div> : null}
-      <form className="card stack" onSubmit={handleCreatePost}>
-        <input
-          className="input"
-          placeholder="Title"
-          value={form.title}
-          onChange={(event) => setForm({ ...form, title: event.target.value })}
-          required
-        />
-        <input
-          className="input"
-          placeholder="Excerpt"
-          value={form.excerpt}
-          onChange={(event) => setForm({ ...form, excerpt: event.target.value })}
-          required
-        />
-        <label className="stack" style={{ gap: 4 }}>
-          Category
+    <main className={styles.page}>
+      <div className={styles.headerRow}>
+        <div className={styles.titleBlock}>
+          <h1>Create new post</h1>
+          <p>Write your post content and add TOC markers so the reader can navigate quickly.</p>
+        </div>
+        <div className={styles.instructions}>
+          <h2>TOC formatting tips</h2>
+          <ol>
+            <li>Start each section with a TOC marker (example below).</li>
+            <li>Keep the title inside angle brackets.</li>
+            <li>Write your HTML or plain text after the marker.</li>
+            <li>Optional intro: use <code>type: into &lt;Intro title&gt;</code> to add an intro section.</li>
+          </ol>
+          <div className={styles.tocHint}>
+            <span>Example:</span>
+            <code>type: toc &lt;Introduction&gt;</code>
+            <code>&lt;h2&gt;Introduction&lt;/h2&gt;</code>
+            <code>&lt;p&gt;Your content...&lt;/p&gt;</code>
+          </div>
+        </div>
+      </div>
+
+      {message ? <div className={styles.notice}>{message}</div> : null}
+      {error ? <div className={`${styles.notice} ${styles.noticeError}`}>{error}</div> : null}
+
+      <form className={styles.formCard} onSubmit={handleCreatePost}>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="title">Title</label>
+          <input
+            id="title"
+            className={styles.input}
+            placeholder="Title"
+            value={form.title}
+            onChange={(event) => setForm({ ...form, title: event.target.value })}
+            required
+          />
+        </div>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="excerpt">Excerpt</label>
+          <input
+            id="excerpt"
+            className={styles.input}
+            placeholder="Excerpt"
+            value={form.excerpt}
+            onChange={(event) => setForm({ ...form, excerpt: event.target.value })}
+            required
+          />
+        </div>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="category">Category</label>
           <select
-            className="select"
+            id="category"
+            className={styles.select}
             value={form.category}
             onChange={(event) => setForm({ ...form, category: event.target.value })}
           >
@@ -132,47 +166,68 @@ export default function NewPostPage() {
               </option>
             ))}
           </select>
-        </label>
-        <label className="stack" style={{ gap: 4 }}>
-          Latest Thumbnail
+        </div>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="latestThumb">Latest Thumbnail</label>
           <input
-            className="input"
+            id="latestThumb"
+            className={styles.input}
             type="file"
             accept="image/*"
             onChange={(event) => setLatestThumbFile(event.target.files?.[0] ?? null)}
           />
-        </label>
-        <label className="stack" style={{ gap: 4 }}>
-          Trending Thumbnail
+          <div className={styles.helperText}>This image is used on latest listings.</div>
+        </div>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="trendingThumb">Trending Thumbnail</label>
           <input
-            className="input"
+            id="trendingThumb"
+            className={styles.input}
             type="file"
             accept="image/*"
             onChange={(event) => setTrendingThumbFile(event.target.files?.[0] ?? null)}
           />
-        </label>
-        <input
-          className="input"
-          placeholder="Tags (comma separated)"
-          value={form.tags}
-          onChange={(event) => setForm({ ...form, tags: event.target.value })}
-        />
-        <textarea
-          className="textarea"
-          placeholder="Markdown content"
-          rows={8}
-          value={form.content}
-          onChange={(event) => setForm({ ...form, content: event.target.value })}
-          required
-        />
-        <button className="button" type="submit">
-          Save draft
-        </button>
+          <div className={styles.helperText}>This image appears in trending slots.</div>
+        </div>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="tags">Tags (comma separated)</label>
+          <input
+            id="tags"
+            className={styles.input}
+            placeholder="Tags (comma separated)"
+            value={form.tags}
+            onChange={(event) => setForm({ ...form, tags: event.target.value })}
+          />
+        </div>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="content">Post content</label>
+          <textarea
+            id="content"
+            className={styles.textarea}
+            placeholder="Add content. Use 'type: toc <Section Title>' to define sections."
+            rows={10}
+            value={form.content}
+            onChange={(event) => setForm({ ...form, content: event.target.value })}
+            required
+          />
+          <div className={styles.helperRow}>
+            <div className={styles.helperText}>You can write HTML or plain text.</div>
+            <div className={styles.tocHint}>
+              <span>Remember to use:</span>
+              <code>type: toc &lt;Why Python?&gt;</code>
+              <code>type: into &lt;Intro&gt;</code>
+            </div>
+          </div>
+        </div>
+        <div className={styles.actions}>
+          <button className={styles.primaryButton} type="submit">
+            Save draft
+          </button>
+          <button className={styles.secondaryButton} type="button" onClick={() => router.push("/dashboard/writer")}>
+            Back
+          </button>
+        </div>
       </form>
-      <button className="button secondary" onClick={() => router.push("/dashboard/writer")}
-      >
-        Back
-      </button>
     </main>
   );
 }
