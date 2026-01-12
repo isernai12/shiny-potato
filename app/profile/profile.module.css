@@ -390,6 +390,83 @@
   font-size: 11px;
 }
 
+/* ===== Template select chips (from your HTML) ===== */
+.chipGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+:global(html.dark) .chipGrid {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pickChip {
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 900;
+  transition: 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:global(html.dark) .pickChip {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pickChip:hover {
+  transform: translateY(-1px);
+}
+
+.pickChip:active {
+  transform: scale(0.98);
+}
+
+.pickChip svg {
+  width: 14px;
+  height: 14px;
+  color: var(--muted);
+  stroke-width: 2;
+}
+
+.selected {
+  background: #0f172a;
+  color: #fff;
+}
+
+:global(html.dark) .selected {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text);
+}
+
+.selected svg {
+  color: currentColor;
+}
+
+.helpRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+  margin-top: 8px;
+  padding: 0 2px;
+}
+
 /* ===== Action bar ===== */
 .actionBar {
   margin-top: 14px;
