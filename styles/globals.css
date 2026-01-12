@@ -1,32 +1,55 @@
-/* =========================================================
-   GLOBAL (Step-1)
-   Only: Base minimal resets + Header + Footer
-   ========================================================= */
+/* ===== Base + Theme Tokens (Layout-level) ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-/* ----- Base minimal (keep it, otherwise layout breaks) ----- */
 :root {
   color-scheme: light;
   font-family: "Inter", system-ui, sans-serif;
   line-height: 1.5;
-  background: #f7f7f8;
-  color: #1b1b1f;
+
+  /* Writo tokens */
+  --bg: #f1f5f9;
+  --text: #0f172a;
+  --muted: #64748b;
+
+  --headerGlass: rgba(255, 255, 255, 0.86);
+  --headerBlur: 6px;
+
+  --softHover: rgba(15, 23, 42, 0.06);
+  --overlay: rgba(0, 0, 0, 0.18);
+
+  --card: #ffffff;
+  --border: #eef0f6;
+  --soft: #f8fafc;
+  --softBorder: #e2e8f0;
 }
 
-html.dark {
+html.dark:root {
   color-scheme: dark;
-}
 
-html.dark body {
-  background: #0f172a;
-  color: #e2e8f0;
-}
+  --bg: #0a0a0a;
+  --text: #e5e7eb;
+  --muted: #a1a1aa;
 
-* {
-  box-sizing: border-box;
+  --headerGlass: rgba(10, 10, 10, 0.78);
+  --headerBlur: 7px;
+
+  --softHover: rgba(255, 255, 255, 0.08);
+  --overlay: rgba(0, 0, 0, 0.35);
+
+  --card: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.1);
+  --soft: rgba(255, 255, 255, 0.06);
+  --softBorder: rgba(255, 255, 255, 0.12);
 }
 
 body {
-  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
 }
 
 a {
@@ -34,104 +57,364 @@ a {
   text-decoration: none;
 }
 
-/* =========================================================
-   HEADER (global)
-   ========================================================= */
-.header {
+/* ===== Layout helpers only ===== */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Blur behind overlays (header system) */
+.pageBlur {
+  transition: filter 0.18s ease;
+  will-change: filter;
+}
+body.menuOpen .pageBlur,
+body.hasOverlay .pageBlur {
+  filter: blur(6px);
+}
+
+/* =========================
+   WRITO HEADER SYSTEM
+========================= */
+
+/* ===== Header ===== */
+.writoHeader {
   position: sticky;
   top: 0;
-  z-index: 40;
-
-  background: rgba(247, 247, 248, 0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid #e5e7eb;
-}
-
-html.dark .header {
-  background: rgba(15, 23, 42, 0.95);
-  border-bottom: 1px solid #1e293b;
-}
-
-.header__content {
+  z-index: 1000;
+  background: var(--headerGlass);
+  backdrop-filter: blur(var(--headerBlur)) saturate(115%);
+  -webkit-backdrop-filter: blur(var(--headerBlur)) saturate(115%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
+  padding-left: 28px;
+  padding-right: 20px;
 }
 
-.header__left,
-.header__right {
+html.dark .writoHeader {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.writoHeaderLeft {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
-.logo {
+.writoBrand {
+  font-size: 18px;
   font-weight: 700;
-  font-size: 20px;
+  letter-spacing: -0.5px;
 }
 
-.icon-button {
-  border: none;
-  background: transparent;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-
-  color: inherit;
-  cursor: pointer;
-}
-
-.icon-button:hover {
-  background: rgba(15, 23, 42, 0.08);
-}
-
-html.dark .icon-button:hover {
-  background: rgba(148, 163, 184, 0.2);
-}
-
-.icon-button svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* If your header uses this helper row */
-.header-row {
+.writoHeaderRight {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-@media (max-width: 720px) {
-  .header__content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-}
-
-/* =========================================================
-   FOOTER (global)
-   ========================================================= */
-.footer {
-  margin-top: 40px;
-  padding: 24px;
-
-  border-top: 1px solid #e5e7eb;
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
   gap: 16px;
 }
 
-.footer__links {
+.writoIconBtn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  color: var(--text);
+  user-select: none;
+  border-radius: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.writoIconBtn:hover {
+  background: var(--softHover);
+}
+
+.writoIconBtn:active {
+  transform: scale(0.98);
+}
+
+/* ===== Overlay ===== */
+.writoOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.16s ease;
+  z-index: 1200;
+}
+
+body.hasOverlay .writoOverlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== Side Menu (Left) ===== */
+.writoMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 230px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
+  transform: translateX(-100%);
+  transition: 0.2s ease;
+  z-index: 1300;
+  padding: 16px;
+  pointer-events: none;
+}
+
+html.dark .writoMenu {
+  background: rgba(10, 10, 10, 0.6);
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+body.menuOpen .writoMenu {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.writoMenuHeader {
   display: flex;
-  gap: 12px;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.writoMenuHeader .writoIconBtn {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+html.dark .writoMenuHeader .writoIconBtn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.writoMenuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+  padding: 12px 0;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  color: var(--text);
+  font-weight: 300;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.dark .writoMenuItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.writoMenuItem:last-child {
+  border-bottom: none;
+}
+
+/* ===== Small Modals ===== */
+.writoModal {
+  position: fixed;
+  left: 50%;
+  top: 86px;
+  transform: translateX(-50%) translateY(8px);
+  width: min(520px, calc(100vw - 28px));
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.15);
+  z-index: 1400;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.16s ease;
+  will-change: transform, opacity;
+  contain: paint;
+}
+
+html.dark .writoModal {
+  background: rgba(10, 10, 10, 0.64);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+}
+
+.writoModal.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.writoModalInner {
+  padding: 14px;
+}
+
+.writoModalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+}
+
+html.dark .writoModalHead {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.writoModalTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.writoModalClose {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.dark .writoModalClose {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.writoModalClose:active {
+  transform: scale(0.98);
+}
+
+.writoSearchInput {
+  width: 100%;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+}
+
+html.dark .writoSearchInput {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.writoHint {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.writoPillGrid {
+  display: flex;
   flex-wrap: wrap;
+  gap: 8px;
+}
+
+.writoLangPill {
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+  cursor: not-allowed;
+  user-select: none;
+}
+
+html.dark .writoLangPill {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.writoEmpty {
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+html.dark .writoEmpty {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Small helper for saved list in modal (header system) */
+.writoSavedList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.writoSavedItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--softBorder);
+  background: var(--soft);
+}
+
+html.dark .writoSavedItem {
+  border: 1px solid var(--softBorder);
+  background: var(--soft);
+}
+
+.writoSavedActions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+  .writoHeader {
+    padding-left: 26px;
+    padding-right: 18px;
+  }
+  .writoHeaderRight {
+    gap: 14px;
+  }
+  .writoIconBtn {
+    width: 33px;
+    height: 33px;
+  }
+  .writoModal {
+    top: 74px;
+  }
 }
