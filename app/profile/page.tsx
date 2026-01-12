@@ -60,6 +60,16 @@ function cn(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ");
 }
 
+function escapeForHtml(s: string) {
+  // replaceAll না ব্যবহার করে safe escape
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 const templates = {
   hobbies: [
     { id: "photography", label: "Photography" },
@@ -258,10 +268,16 @@ export default function ProfilePage() {
       categories
     };
 
-    const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Preview Data</title>
-<style>body{font-family:ui-monospace,monospace;background:#0a0a0a;color:#e5e7eb;padding:16px}pre{white-space:pre-wrap;word-break:break-word}</style>
-</head><body><pre>${JSON.stringify(payload, null, 2).replaceAll("<", "&lt;")}</pre></body></html>`;
+    const json = JSON.stringify(payload, null, 2);
+    const safeJson = escapeForHtml(json);
+
+    const html =
+      '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+      "<title>Preview Data</title>" +
+      "<style>body{font-family:ui-monospace,monospace;background:#0a0a0a;color:#e5e7eb;padding:16px}pre{white-space:pre-wrap;word-break:break-word}</style>" +
+      "</head><body><pre>" +
+      safeJson +
+      "</pre></body></html>";
 
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -280,7 +296,6 @@ export default function ProfilePage() {
 
     let updatedAvatarUrl = avatarUrl;
 
-    // Upload if file selected
     if (avatarFile) {
       const formData = new FormData();
       formData.append("file", avatarFile);
@@ -346,7 +361,6 @@ export default function ProfilePage() {
     showFlash({ kind: "success", title: "Profile updated", message: "Your changes were saved successfully." });
   }
 
-  // Not logged in
   if (!user) {
     return (
       <main className={styles.wrap}>
@@ -387,7 +401,6 @@ export default function ProfilePage() {
         <div className={styles.panelBody}>
           {flash ? <FlashBanner flash={flash} onClose={() => setFlash(null)} /> : null}
 
-          {/* Top row */}
           <div className={styles.profileTop}>
             <div className={styles.avatarBox} aria-label="Profile picture preview">
               {avatarPreviewUrl ? (
@@ -429,7 +442,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Form */}
           <form className={styles.grid} onSubmit={handleSubmit}>
             <div className={styles.field}>
               <div className={styles.label}>
@@ -468,7 +480,6 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Social Links */}
             <div className={styles.sectionTitle}>
               <div>Social Links</div>
               <span>Optional</span>
@@ -558,7 +569,6 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Hobbies */}
             <div className={styles.sectionTitle}>
               <div>Hobbies</div>
               <span>{hobbies.length}/3 selected</span>
@@ -586,7 +596,6 @@ export default function ProfilePage() {
               <span />
             </div>
 
-            {/* Categories */}
             <div className={styles.sectionTitle}>
               <div>Categories</div>
               <span>{categories.length}/3 selected</span>
@@ -614,7 +623,6 @@ export default function ProfilePage() {
               <span />
             </div>
 
-            {/* Password */}
             <div className={styles.sectionTitle}>
               <div>Password</div>
               <span>Optional</span>
@@ -650,7 +658,6 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Action bar */}
             <div className={styles.actionBar}>
               <button className={styles.btn} type="button" onClick={previewData}>
                 <ExternalLink /> Preview
