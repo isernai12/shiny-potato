@@ -6,7 +6,28 @@ import { slugify } from "../utils/slugify";
 const POSTS_FILE = "posts.json";
 
 export async function readPosts() {
-  return readDataFile<Post>(POSTS_FILE);
+  const data = await readDataFile<Post>(POSTS_FILE);
+  let needsRewrite = false;
+  data.records = data.records.map((post) => {
+    const updated = { ...post } as Post;
+    if (!updated.category) {
+      updated.category = "Technology";
+      needsRewrite = true;
+    }
+    if (!Array.isArray(updated.likes)) {
+      updated.likes = [];
+      needsRewrite = true;
+    }
+    if (!Array.isArray(updated.comments)) {
+      updated.comments = [];
+      needsRewrite = true;
+    }
+    return updated;
+  });
+  if (needsRewrite) {
+    await writePosts(data.records);
+  }
+  return data;
 }
 
 export async function writePosts(posts: Post[]) {
@@ -17,9 +38,9 @@ export async function createPost(params: {
   title: string;
   content: string;
   excerpt: string;
-  coverImageUrl?: string;
   thumbnailLatestUrl?: string;
   thumbnailTrendingUrl?: string;
+  category: string;
   tags: string[];
   authorUserId: string;
 }) {
@@ -38,14 +59,16 @@ export async function createPost(params: {
     slug,
     content: params.content,
     excerpt: params.excerpt,
-    coverImageUrl: params.coverImageUrl || undefined,
     thumbnailLatestUrl: params.thumbnailLatestUrl || undefined,
     thumbnailTrendingUrl: params.thumbnailTrendingUrl || undefined,
+    category: params.category,
     tags: params.tags,
     authorUserId: params.authorUserId,
     status: "draft",
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
+    likes: [],
+    comments: []
   };
   const updated = [...data.records, post];
   await writePosts(updated);

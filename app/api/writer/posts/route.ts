@@ -22,13 +22,16 @@ export async function POST(request: NextRequest) {
     if (!body.title || !body.content || !body.excerpt) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
+    if (!body.category) {
+      return NextResponse.json({ error: "Category required" }, { status: 400 });
+    }
     const post = await createPost({
       title: body.title,
       content: body.content,
       excerpt: body.excerpt,
-      coverImageUrl: body.coverImageUrl,
       thumbnailLatestUrl: body.thumbnailLatestUrl,
       thumbnailTrendingUrl: body.thumbnailTrendingUrl,
+      category: body.category,
       tags: Array.isArray(body.tags) ? body.tags : [],
       authorUserId: auth.user.id
     });

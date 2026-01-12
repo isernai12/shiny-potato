@@ -15,11 +15,11 @@ type Post = {
   slug: string;
   excerpt: string;
   tags: string[];
+  category: string;
   authorUserId: string;
   createdAt: string;
   thumbnailLatestUrl?: string;
   thumbnailTrendingUrl?: string;
-  coverImageUrl?: string;
 };
 
 type BookmarkItem = {
@@ -71,9 +71,9 @@ function getAuthor(users: User[], userId: string) {
 
 function pickThumbnail(post: Post, variant: "trending" | "latest") {
   if (variant === "trending") {
-    return post.thumbnailTrendingUrl || post.coverImageUrl || undefined;
+    return post.thumbnailTrendingUrl || undefined;
   }
-  return post.thumbnailLatestUrl || post.coverImageUrl || undefined;
+  return post.thumbnailLatestUrl || undefined;
 }
 
 function PostCard({
@@ -114,6 +114,11 @@ function PostCard({
               <p className="author__date">{new Date(post.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
+          {author ? (
+            <Link className="author__link" href={`/writer/${author.id}`}>
+              View profile
+            </Link>
+          ) : null}
           <button
             className={`bookmark-toggle ${isBookmarked ? "active" : ""}`}
             type="button"
@@ -159,21 +164,19 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
   const topTags = useMemo(() => {
     const counts = new Map<string, number>();
     approvedPosts.forEach((post) => {
-      post.tags.forEach((tag) => {
-        counts.set(tag, (counts.get(tag) || 0) + 1);
-      });
+      counts.set(post.category, (counts.get(post.category) || 0) + 1);
     });
     return [...counts.entries()]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 2)
-      .map(([tag]) => tag);
+      .map(([category]) => category);
   }, [approvedPosts]);
 
   const categoryPosts = useMemo(
     () =>
-      topTags.map((tag) => ({
-        tag,
-        posts: approvedPosts.filter((post) => post.tags.includes(tag)).slice(0, 3)
+      topTags.map((category) => ({
+        category,
+        posts: approvedPosts.filter((post) => post.category === category).slice(0, 3)
       })),
     [approvedPosts, topTags]
   );
@@ -200,7 +203,8 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
       (post) =>
         post.title.toLowerCase().includes(lower) ||
         post.excerpt.toLowerCase().includes(lower) ||
-        post.tags.some((tag) => tag.toLowerCase().includes(lower))
+        post.tags.some((tag) => tag.toLowerCase().includes(lower)) ||
+        post.category.toLowerCase().includes(lower)
     );
   }, [approvedPosts, query]);
 
@@ -222,7 +226,7 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
         id: post.id,
         title: post.title,
         slug: post.slug,
-        thumbnailUrl: post.thumbnailLatestUrl || post.coverImageUrl
+        thumbnailUrl: post.thumbnailLatestUrl
       }
     ];
     setBookmarks(next);
@@ -297,14 +301,14 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
             <h2>Category Picks</h2>
             <span className="badge">Top tags</span>
           </div>
-          <div className="grid two">
-            {categoryPosts.map((group) => (
-              <div key={group.tag} className="card stack">
-                <h3>{group.tag}</h3>
-                {group.posts.map((post) => (
-                  <PostCard
-                    key={post.id}
-                    post={post}
+        <div className="grid two">
+          {categoryPosts.map((group) => (
+            <div key={group.category} className="card stack">
+              <h3>{group.category}</h3>
+              {group.posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
                     author={getAuthor(users, post.authorUserId)}
                     variant="category"
                     onToggleBookmark={toggleBookmark}
@@ -325,17 +329,19 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
         <div className="grid two">
           {topWriters.map((writer) => (
             <div className="card writer-card" key={writer.user?.id}>
-              {writer.user?.avatarUrl ? (
-                <img src={writer.user.avatarUrl} alt={writer.user.fullName} />
-              ) : (
-                <div className="writer-card__avatar">
-                  {writer.user?.fullName?.charAt(0) ?? "W"}
+              <Link className="writer-card__link" href={`/writer/${writer.user?.id}`}>
+                {writer.user?.avatarUrl ? (
+                  <img src={writer.user.avatarUrl} alt={writer.user.fullName} />
+                ) : (
+                  <div className="writer-card__avatar">
+                    {writer.user?.fullName?.charAt(0) ?? "W"}
+                  </div>
+                )}
+                <div>
+                  <h4>{writer.user?.fullName}</h4>
+                  <p>{writer.count} posts</p>
                 </div>
-              )}
-              <div>
-                <h4>{writer.user?.fullName}</h4>
-                <p>{writer.count} posts</p>
-              </div>
+              </Link>
             </div>
           ))}
         </div>

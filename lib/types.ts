@@ -36,9 +36,9 @@ export type Post = {
   slug: string;
   content: string;
   excerpt: string;
-  coverImageUrl?: string;
   thumbnailLatestUrl?: string;
   thumbnailTrendingUrl?: string;
+  category: string;
   tags: string[];
   authorUserId: string;
   status: PostStatus;
@@ -47,6 +47,16 @@ export type Post = {
   submittedAt?: string;
   reviewedAt?: string;
   reviewNote?: string;
+  likes: string[];
+  comments: Comment[];
+};
+
+export type Comment = {
+  id: string;
+  userId: string;
+  content: string;
+  createdAt: string;
+  likes: string[];
 };
 
 export type DataFile<T> = {
