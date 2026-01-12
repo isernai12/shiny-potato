@@ -10,7 +10,7 @@ import { readSettings } from "../lib/data/settings";
 
 export const metadata = {
   title: "Writo",
-  description: "A JSON-backed blog platform"
+  description: "A JSON-backed blog platform",
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
@@ -19,16 +19,20 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const user = await getUserFromSessionId(sessionId);
   const settings = await readSettings();
 
+  const isSuspended = !!user?.suspended;
+  const maintenanceBlocked = settings.maintenanceMode && user?.role !== "admin";
+  const canShowChildren = !isSuspended && !maintenanceBlocked;
+
   return (
     <html lang="en">
       <body>
-        <Header />
-        <Tracker />
-        {user?.suspended ? <Suspended /> : null}
-        {!user?.suspended && settings.maintenanceMode && user?.role !== "admin" ? (
-          <Maintenance />
-        ) : null}
-        {!user?.suspended && !(settings.maintenanceMode && user?.role !== "admin") ? children : null}
+        <div className="pageBlur">
+          <Header />
+          <Tracker />
+          {isSuspended ? <Suspended /> : null}
+          {!isSuspended && maintenanceBlocked ? <Maintenance /> : null}
+          {canShowChildren ? children : null}
+        </div>
       </body>
     </html>
   );
