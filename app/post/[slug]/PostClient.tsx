@@ -240,67 +240,6 @@ export default function PostClient({
   }, []);
 
   useEffect(() => {
-    const body = document.body;
-    body.classList.add("postDetailPage");
-    let lastY = Math.max(0, window.scrollY || 0);
-    let ticking = false;
-    let compact = false;
-    let lastToggle = 0;
-    const COMPACT_ON = 90;
-    const EXPAND_AT = 35;
-    const DELTA = 2;
-    const COOLDOWN = 180;
-
-    function updateStackHeight() {
-      const header = document.querySelector<HTMLElement>(".writoHeader");
-      const headerHeight = body.classList.contains("compactHeader")
-        ? 0
-        : Math.round(header?.getBoundingClientRect().height || 0);
-      const trackerHeight = Math.round(trackerRef.current?.getBoundingClientRect().height || 0);
-      const stack = Math.max(44, headerHeight + trackerHeight);
-      document.documentElement.style.setProperty("--stackH", `${stack}px`);
-    }
-
-    function setCompact(next: boolean) {
-      const now = performance.now();
-      if (next === compact) return;
-      if (now - lastToggle < COOLDOWN) return;
-      compact = next;
-      body.classList.toggle("compactHeader", compact);
-      lastToggle = now;
-      setObserverKey((value) => value + 1);
-      updateStackHeight();
-    }
-
-    function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const y = Math.max(0, window.scrollY || 0);
-        const d = y - lastY;
-        if (y <= EXPAND_AT) {
-          setCompact(false);
-        } else {
-          if (d > DELTA && y >= COMPACT_ON) setCompact(true);
-          if (d < -DELTA) setCompact(false);
-        }
-        lastY = y;
-        ticking = false;
-        updateStackHeight();
-      });
-    }
-
-    updateStackHeight();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", updateStackHeight, { passive: true });
-    return () => {
-      body.classList.remove("postDetailPage", "compactHeader");
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", updateStackHeight);
-    };
-  }, []);
-
-  useEffect(() => {
     const started = Date.now();
     return () => {
       const seconds = Math.max(1, Math.round((Date.now() - started) / 1000));
@@ -323,6 +262,20 @@ export default function PostClient({
     }
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const body = document.body;
+    let lastCompact = body.classList.contains("compactHeader");
+    const observer = new MutationObserver(() => {
+      const nextCompact = body.classList.contains("compactHeader");
+      if (nextCompact !== lastCompact) {
+        lastCompact = nextCompact;
+        setObserverKey((value) => value + 1);
+      }
+    });
+    observer.observe(body, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -530,7 +483,7 @@ export default function PostClient({
 
   return (
     <main className={styles.postPage} ref={rootRef}>
-      <div className={styles.trackerBar} ref={trackerRef}>
+      <div className={styles.trackerBar} ref={trackerRef} data-post-tracker="true">
         <div className={styles.trackerInner}>
           <div className={styles.progressWrap} aria-label="Reading progress">
             <svg className={styles.progressSvg} viewBox="0 0 36 36" aria-hidden="true">
