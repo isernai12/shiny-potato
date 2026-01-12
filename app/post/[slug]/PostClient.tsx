@@ -16,6 +16,7 @@ import {
   Newspaper,
 } from "lucide-react";
 import styles from "./post.module.css";
+import Header from "../../components/Header";
 
 type User = {
   id: string;
@@ -530,63 +531,65 @@ export default function PostClient({
 
   return (
     <main className={styles.postPage} ref={rootRef}>
-      <div className={styles.trackerBar} ref={trackerRef}>
-        <div className={styles.trackerInner}>
-          <div className={styles.progressWrap} aria-label="Reading progress">
-            <svg className={styles.progressSvg} viewBox="0 0 36 36" aria-hidden="true">
-              <path className={styles.ringTrack} d="M18 2 a 16 16 0 0 1 0 32 a 16 16 0 0 1 0 -32" />
-              <path
-                ref={ringRef}
-                className={styles.ringFill}
-                d="M18 2 a 16 16 0 0 1 0 32 a 16 16 0 0 1 0 -32"
-              />
-            </svg>
-          </div>
+      <div className={styles.headerStack}>
+        <Header />
+        <div className={styles.trackerBar} ref={trackerRef}>
+          <div className={styles.trackerInner}>
+            <div className={styles.progressWrap} aria-label="Reading progress">
+              <svg className={styles.progressSvg} viewBox="0 0 36 36" aria-hidden="true">
+                <path className={styles.ringTrack} d="M18 2 a 16 16 0 0 1 0 32 a 16 16 0 0 1 0 -32" />
+                <path
+                  ref={ringRef}
+                  className={styles.ringFill}
+                  d="M18 2 a 16 16 0 0 1 0 32 a 16 16 0 0 1 0 -32"
+                />
+              </svg>
+            </div>
 
-          <div className={styles.trackerTitle}>
-            <span>{trackedItems[activeIndex]?.title ?? "Introduction"}</span>
-          </div>
+            <div className={styles.trackerTitle}>
+              <span>{trackedItems[activeIndex]?.title ?? "Introduction"}</span>
+            </div>
 
-          <button
-            ref={tocButtonRef}
-            className={styles.tocButton}
-            type="button"
-            data-open={tocOpen}
-            aria-label="Open sections"
-            onClick={() => setTocOpen((open) => !open)}
-          >
-            <ChevronDown className={styles.tocIcon} />
-          </button>
-        </div>
-        <div ref={tocRef} className={styles.tocPanel} data-open={tocOpen}>
-          <div className={styles.tocListWrap}>
-            {tocItems.map((item) => (
-              <div
-                key={item.id}
-                className={`${styles.tocItem} ${
-                  trackedItems[activeIndex]?.id === item.id ? styles.tocItemActive : ""
-                }`}
-                onClick={() => {
-                  scrollToSection(item.id);
-                  setTocOpen(false);
-                }}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
+            <button
+              ref={tocButtonRef}
+              className={styles.tocButton}
+              type="button"
+              data-open={tocOpen}
+              aria-label="Open sections"
+              onClick={() => setTocOpen((open) => !open)}
+            >
+              <ChevronDown className={styles.tocIcon} />
+            </button>
+          </div>
+          <div ref={tocRef} className={styles.tocPanel} data-open={tocOpen}>
+            <div className={styles.tocListWrap}>
+              {tocItems.map((item) => (
+                <div
+                  key={item.id}
+                  className={`${styles.tocItem} ${
+                    trackedItems[activeIndex]?.id === item.id ? styles.tocItemActive : ""
+                  }`}
+                  onClick={() => {
                     scrollToSection(item.id);
                     setTocOpen(false);
-                  }
-                }}
-              >
-                {item.title}
-              </div>
-            ))}
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      scrollToSection(item.id);
+                      setTocOpen(false);
+                    }
+                  }}
+                >
+                  {item.title}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-
       <div className={styles.pageSection}>
         <div className={styles.breadcrumb} aria-label="Page location">
           <div className={`${styles.bLine} ${styles.bLineTop}`}>

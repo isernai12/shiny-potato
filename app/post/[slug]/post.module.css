@@ -1,6 +1,6 @@
 .postPage {
   --wrap: 520px;
-  --mainH: 46px;
+  --mainH: 56px;
   --ringSize: 16px;
   --ringStroke: 3px;
   --stackH: 92px;
@@ -9,8 +9,24 @@
 }
 
 :global(body.postDetailPage) .writoHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   transition: transform 0.18s ease, opacity 0.18s ease;
   will-change: transform, opacity;
+}
+
+.headerStack {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--headerGlass);
+  backdrop-filter: blur(var(--headerBlur)) saturate(115%);
+  -webkit-backdrop-filter: blur(var(--headerBlur)) saturate(115%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
 }
 
 :global(body.postDetailPage.compactHeader) .writoHeader {
@@ -20,24 +36,18 @@
 }
 
 .trackerBar {
-  position: sticky;
-  top: 56px;
-  z-index: 900;
-  background: var(--headerGlass);
-  backdrop-filter: blur(var(--headerBlur)) saturate(115%);
-  -webkit-backdrop-filter: blur(var(--headerBlur)) saturate(115%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
-  transition: top 0.18s ease;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: calc(var(--mainH) + 4px) 0 5px;
+  transition: padding-top 0.18s ease;
 }
 
 :global(html.dark) .trackerBar {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 :global(body.postDetailPage.compactHeader) .trackerBar {
-  top: 0;
+  padding-top: 6px;
+  border-top: none;
 }
 
 .trackerInner {
