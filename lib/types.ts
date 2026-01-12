@@ -3,7 +3,8 @@ export type Role = "admin" | "writer" | "user";
 export type User = {
   id: string;
   email: string;
-  name: string;
+  fullName: string;
+  avatarUrl?: string;
   passwordHash: string;
   role: Role;
   createdAt: string;

@@ -10,7 +10,8 @@ export function sanitizeUser(user: User) {
   return {
     id: user.id,
     email: user.email,
-    name: user.name,
+    fullName: user.fullName,
+    avatarUrl: user.avatarUrl,
     role: user.role,
     createdAt: user.createdAt
   };

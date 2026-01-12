@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireRole } from "../../../../../../lib/auth";
 import { updatePost } from "../../../../../../lib/data/posts";
 
@@ -15,6 +16,7 @@ export async function POST(request: NextRequest, context: { params: { id: string
       reviewNote: body.note || undefined,
       updatedAt: new Date().toISOString()
     });
+    revalidatePath(`/post/${updated.slug}`);
     return NextResponse.json({ post: updated });
   } catch (error) {
     return NextResponse.json(

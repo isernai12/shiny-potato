@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 type User = {
   id: string;
-  name: string;
+  fullName: string;
   email: string;
   role: string;
 };
@@ -55,7 +55,7 @@ export default function DashboardPage() {
 
   return (
     <main className="container stack">
-      <h1>Welcome, {user.name}</h1>
+      <h1>Welcome, {user.fullName}</h1>
       <div className="card stack">
         <p>Email: {user.email}</p>
         <p>Role: {user.role}</p>
@@ -65,6 +65,9 @@ export default function DashboardPage() {
               Writer tools
             </Link>
           ) : null}
+          <Link className="button secondary" href="/profile">
+            Profile
+          </Link>
           {user.role === "admin" ? (
             <Link className="button secondary" href="/dashboard/admin">
               Admin tools

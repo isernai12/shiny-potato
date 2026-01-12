@@ -5,18 +5,23 @@ import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [name, setName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setError("");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password })
+      body: JSON.stringify({ fullName, email, password, confirmPassword })
     });
     if (!response.ok) {
       const data = await response.json();
@@ -32,12 +37,12 @@ export default function RegisterPage() {
       <form className="card stack" onSubmit={handleSubmit}>
         {error ? <div className="notice">{error}</div> : null}
         <label className="stack" style={{ gap: 4 }}>
-          Name
+          Full Name
           <input
             className="input"
             required
-            value={name}
-            onChange={(event) => setName(event.target.value)}
+            value={fullName}
+            onChange={(event) => setFullName(event.target.value)}
           />
         </label>
         <label className="stack" style={{ gap: 4 }}>
@@ -59,6 +64,17 @@ export default function RegisterPage() {
             required
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+          />
+        </label>
+        <label className="stack" style={{ gap: 4 }}>
+          Confirm Password
+          <input
+            className="input"
+            type="password"
+            minLength={8}
+            required
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
           />
         </label>
         <button className="button" type="submit">

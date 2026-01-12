@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 type User = {
   id: string;
-  name: string;
+  fullName: string;
   email: string;
   role: string;
 };
@@ -34,12 +34,6 @@ export default function AdminDashboard() {
   const [note, setNote] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [userForm, setUserForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "user"
-  });
 
   async function load() {
     const [usersRes, reqRes, postsRes, allPostsRes] = await Promise.all([
@@ -134,22 +128,18 @@ export default function AdminDashboard() {
     load();
   }
 
-  async function handleCreateUser(event: React.FormEvent) {
-    event.preventDefault();
+  async function handlePromoteUser(userId: string) {
     setMessage("");
     setError("");
-    const response = await fetch("/api/admin/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userForm)
+    const response = await fetch(`/api/admin/users/${userId}/promote`, {
+      method: "POST"
     });
     if (!response.ok) {
       const data = await response.json();
-      setError(data.error || "Failed to create user");
+      setError(data.error || "Failed to promote user");
       return;
     }
-    setMessage("User created.");
-    setUserForm({ name: "", email: "", password: "", role: "user" });
+    setMessage("User promoted to writer.");
     load();
   }
 
@@ -159,55 +149,6 @@ export default function AdminDashboard() {
       {message ? <div className="notice">{message}</div> : null}
       {error ? <div className="notice">{error}</div> : null}
       <section className="card stack">
-        <h2>Create user</h2>
-        <form className="stack" onSubmit={handleCreateUser}>
-          <input
-            className="input"
-            placeholder="Name"
-            value={userForm.name}
-            onChange={(event) =>
-              setUserForm((prev) => ({ ...prev, name: event.target.value }))
-            }
-            required
-          />
-          <input
-            className="input"
-            placeholder="Email"
-            type="email"
-            value={userForm.email}
-            onChange={(event) =>
-              setUserForm((prev) => ({ ...prev, email: event.target.value }))
-            }
-            required
-          />
-          <input
-            className="input"
-            placeholder="Password"
-            type="password"
-            minLength={8}
-            value={userForm.password}
-            onChange={(event) =>
-              setUserForm((prev) => ({ ...prev, password: event.target.value }))
-            }
-            required
-          />
-          <select
-            className="select"
-            value={userForm.role}
-            onChange={(event) =>
-              setUserForm((prev) => ({ ...prev, role: event.target.value }))
-            }
-          >
-            <option value="user">user</option>
-            <option value="writer">writer</option>
-            <option value="admin">admin</option>
-          </select>
-          <button className="button" type="submit">
-            Create user
-          </button>
-        </form>
-      </section>
-      <section className="card stack">
         <h2>Users</h2>
         <table className="table">
           <thead>
@@ -215,14 +156,25 @@ export default function AdminDashboard() {
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
+              <th />
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <td>{user.name}</td>
+                <td>{user.fullName}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>
+                <td>
+                  {user.role === "user" ? (
+                    <button
+                      className="button secondary"
+                      onClick={() => handlePromoteUser(user.id)}
+                    >
+                      Promote to writer
+                    </button>
+                  ) : null}
+                </td>
               </tr>
             ))}
           </tbody>

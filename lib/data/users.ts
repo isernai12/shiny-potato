@@ -7,17 +7,28 @@ const USERS_FILE = "users.json";
 
 export async function readUsers() {
   const data = await readDataFile<User>(USERS_FILE);
+  let needsRewrite = false;
+  data.records = data.records.map((user) => {
+    if (!user.fullName && (user as { name?: string }).name) {
+      needsRewrite = true;
+      return { ...user, fullName: (user as { name?: string }).name ?? "User" };
+    }
+    return user;
+  });
   if (data.records.length === 0) {
     const now = new Date().toISOString();
     const passwordHash = await bcrypt.hash("admin12345", 10);
     data.records.push({
       id: randomUUID(),
       email: "admin@writo.local",
-      name: "Default Admin",
+      fullName: "Default Admin",
       passwordHash,
       role: "admin",
       createdAt: now
     });
+    needsRewrite = true;
+  }
+  if (needsRewrite) {
     await writeDataFile(USERS_FILE, data);
   }
   return data;
@@ -39,7 +50,7 @@ export async function findUserById(id: string) {
 
 export async function createUser(params: {
   email: string;
-  name: string;
+  fullName: string;
   password: string;
   role?: Role;
 }) {
@@ -55,7 +66,7 @@ export async function createUser(params: {
   const user: User = {
     id: randomUUID(),
     email: params.email,
-    name: params.name,
+    fullName: params.fullName,
     passwordHash,
     role: params.role ?? "user",
     createdAt: now
@@ -70,5 +81,22 @@ export async function updateUserRole(userId: string, role: Role) {
   const updated = data.records.map((user) =>
     user.id === userId ? { ...user, role } : user
   );
+  await writeUsers(updated);
+}
+
+export async function updateUserProfile(
+  userId: string,
+  updates: Partial<Pick<User, "fullName" | "avatarUrl" | "passwordHash">>
+) {
+  const data = await readUsers();
+  let found = false;
+  const updated = data.records.map((user) => {
+    if (user.id !== userId) return user;
+    found = true;
+    return { ...user, ...updates };
+  });
+  if (!found) {
+    throw new Error("User not found.");
+  }
   await writeUsers(updated);
 }

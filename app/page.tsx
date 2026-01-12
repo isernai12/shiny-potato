@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { readPosts } from "../lib/data/posts";
 import { filterPostsByStatus, sortPostsByDate } from "../lib/data/posts";
+import { readUsers } from "../lib/data/users";
+
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const data = await readPosts();
+  const users = await readUsers();
   const approved = sortPostsByDate(filterPostsByStatus(data.records, "approved"));
 
   return (
@@ -17,6 +21,11 @@ export default async function HomePage() {
             <article className="card stack" key={post.id}>
               <div className="stack" style={{ gap: 8 }}>
                 <h2>{post.title}</h2>
+                <p>
+                  By{" "}
+                  {users.records.find((user) => user.id === post.authorUserId)?.fullName ??
+                    "Unknown author"}
+                </p>
                 <p>{post.excerpt}</p>
                 <div className="badge">{post.tags.join(", ") || "No tags"}</div>
               </div>
