@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const canShowChildren = !isSuspended && !maintenanceBlocked;
 
   return (
-    <html lang="en" className={outfit.variable}>
+    <html lang="en" className={outfit.variable} suppressHydrationWarning>
       <body>
         <div className="pageBlur">
           <Header />
