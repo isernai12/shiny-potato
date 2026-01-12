@@ -18,9 +18,15 @@ export default function WriterPostsPage() {
   const [filter, setFilter] = useState<Filter>("all");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     async function load() {
+      const meResponse = await fetch("/api/me");
+      if (meResponse.ok) {
+        const meData = await meResponse.json();
+        setIsAdmin(meData.user?.role === "admin");
+      }
       const response = await fetch("/api/writer/posts");
       if (!response.ok) return;
       const data = await response.json();
@@ -28,6 +34,18 @@ export default function WriterPostsPage() {
     }
     load();
   }, []);
+
+  if (isAdmin) {
+    return (
+      <main className="container stack">
+        <h1>Manage posts</h1>
+        <p>Admin accounts cannot manage posts.</p>
+        <button className="button secondary" onClick={() => router.push("/dashboard/admin")}>
+          Go to admin dashboard
+        </button>
+      </main>
+    );
+  }
 
   const filtered = useMemo(() => {
     if (filter === "all") return posts;

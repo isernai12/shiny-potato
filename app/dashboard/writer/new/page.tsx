@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CATEGORIES } from "../../../../lib/categories";
 
@@ -8,6 +8,7 @@ export default function NewPostPage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [form, setForm] = useState({
     title: "",
     content: "",
@@ -17,6 +18,28 @@ export default function NewPostPage() {
   });
   const [latestThumbFile, setLatestThumbFile] = useState<File | null>(null);
   const [trendingThumbFile, setTrendingThumbFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    async function load() {
+      const response = await fetch("/api/me");
+      if (!response.ok) return;
+      const data = await response.json();
+      setIsAdmin(data.user?.role === "admin");
+    }
+    load();
+  }, []);
+
+  if (isAdmin) {
+    return (
+      <main className="container stack">
+        <h1>Create new post</h1>
+        <p>Admin accounts cannot create posts.</p>
+        <button className="button secondary" onClick={() => router.push("/dashboard/admin")}>
+          Go to admin dashboard
+        </button>
+      </main>
+    );
+  }
 
   async function handleCreatePost(event: React.FormEvent) {
     event.preventDefault();

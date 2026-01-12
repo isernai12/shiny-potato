@@ -8,5 +8,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
   const stats = await readSiteStats();
-  return NextResponse.json({ stats });
+  const uptimeSeconds = Math.floor(process.uptime());
+  return NextResponse.json({ stats: { ...stats, uptimeSeconds } });
 }

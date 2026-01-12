@@ -3,7 +3,7 @@ import { requireRole } from "../../../../../../lib/auth";
 import { readPosts, updatePost } from "../../../../../../lib/data/posts";
 
 export async function POST(request: NextRequest, context: { params: { id: string } }) {
-  const auth = await requireRole(request, ["user", "admin"]);
+  const auth = await requireRole(request, ["user"]);
   if ("error" in auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }

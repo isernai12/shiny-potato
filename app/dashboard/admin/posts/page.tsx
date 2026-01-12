@@ -66,7 +66,7 @@ export default function AdminPostReviewPage() {
                   <td>{post.title}</td>
                   <td>{post.authorUserId}</td>
                   <td>
-                    <a className="button secondary" href={`/post/${post.slug}`}>
+                    <a className="button secondary" href={`/dashboard/admin/posts/${post.id}/preview`}>
                       Preview
                     </a>
                   </td>

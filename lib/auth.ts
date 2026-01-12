@@ -53,7 +53,12 @@ export function signOut(response: NextResponse) {
 export async function getSessionUser(request: NextRequest) {
   const cookie = request.cookies.get(COOKIE_NAME);
   if (!cookie?.value) return undefined;
-  const session = await findSession(cookie.value);
+  return getUserFromSessionId(cookie.value);
+}
+
+export async function getUserFromSessionId(sessionId?: string) {
+  if (!sessionId) return undefined;
+  const session = await findSession(sessionId);
   if (!session) return undefined;
   const user = await findUserById(session.userId);
   if (!user) {

@@ -3,7 +3,7 @@ import { requireRole } from "../../../../lib/auth";
 import { createPost, readPosts } from "../../../../lib/data/posts";
 
 export async function GET(request: NextRequest) {
-  const auth = await requireRole(request, ["user", "admin"]);
+  const auth = await requireRole(request, ["user"]);
   if ("error" in auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireRole(request, ["user", "admin"]);
+  const auth = await requireRole(request, ["user"]);
   if ("error" in auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }

@@ -25,14 +25,17 @@ export default function DashboardPage() {
   useEffect(() => {
     async function load() {
       const response = await fetch("/api/me");
+      let meData: { user: User | null } = { user: null };
       if (response.ok) {
-        const data = await response.json();
-        setUser(data.user ?? null);
+        meData = await response.json();
+        setUser(meData.user ?? null);
       }
-      const postResponse = await fetch("/api/writer/posts");
-      if (postResponse.ok) {
-        const postData = await postResponse.json();
-        setPosts(postData.posts ?? []);
+      if (meData.user && meData.user.role !== "admin") {
+        const postResponse = await fetch("/api/writer/posts");
+        if (postResponse.ok) {
+          const postData = await postResponse.json();
+          setPosts(postData.posts ?? []);
+        }
       }
       setLoading(false);
     }
@@ -87,12 +90,19 @@ export default function DashboardPage() {
       <div className="card stack">
         <h2>Quick actions</h2>
         <div className="stack" style={{ gap: 8 }}>
-          <button className="button" onClick={() => router.push("/dashboard/writer/new")}>
-            Create post
-          </button>
-          <button className="button secondary" onClick={() => router.push("/dashboard/writer/posts")}>
-            Manage posts
-          </button>
+          {user.role !== "admin" ? (
+            <>
+              <button className="button" onClick={() => router.push("/dashboard/writer/new")}>
+                Create post
+              </button>
+              <button
+                className="button secondary"
+                onClick={() => router.push("/dashboard/writer/posts")}
+              >
+                Manage posts
+              </button>
+            </>
+          ) : null}
           <button className="button secondary" onClick={() => router.push("/profile")}>
             Profile
           </button>

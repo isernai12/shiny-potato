@@ -35,6 +35,18 @@ export default function WriterDashboard() {
     load();
   }, []);
 
+  if (user?.role === "admin") {
+    return (
+      <main className="container stack">
+        <h1>Writer tools</h1>
+        <p>Admin accounts cannot create posts.</p>
+        <button className="button secondary" onClick={() => router.push("/dashboard/admin")}>
+          Go to admin dashboard
+        </button>
+      </main>
+    );
+  }
+
 
   if (!user) {
     return (
