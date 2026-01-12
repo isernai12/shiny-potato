@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import { ReactNode } from "react";
+import Link from "next/link";
 import Header from "./components/Header";
 import Tracker from "./components/Tracker";
 import Maintenance from "./components/Maintenance";
@@ -31,15 +32,42 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const maintenanceBlocked = settings.maintenanceMode && user?.role !== "admin";
   const canShowChildren = !isSuspended && !maintenanceBlocked;
 
+  const year = new Date().getFullYear();
+
   return (
     <html lang="en" className={outfit.variable} suppressHydrationWarning>
       <body>
         <div className="pageBlur">
           <Header />
           <Tracker />
+
           {isSuspended ? <Suspended /> : null}
           {!isSuspended && maintenanceBlocked ? <Maintenance /> : null}
           {canShowChildren ? children : null}
+
+          <footer className="writoFooter">
+            <div className="container writoFooterInner">
+              <div>
+                <div className="writoFooterBrand">Writo</div>
+                <div className="writoFooterMeta">© {year} • All rights reserved</div>
+              </div>
+
+              <div className="writoFooterLinks">
+                <Link className="writoFooterLink" href="/">
+                  Home
+                </Link>
+                <Link className="writoFooterLink" href="/posts">
+                  Posts
+                </Link>
+                <Link className="writoFooterLink" href="/profile">
+                  Profile
+                </Link>
+                <Link className="writoFooterLink" href="/dashboard">
+                  Dashboard
+                </Link>
+              </div>
+            </div>
+          </footer>
         </div>
       </body>
     </html>
