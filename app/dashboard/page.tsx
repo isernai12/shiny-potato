@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type User = {
@@ -9,12 +8,19 @@ type User = {
   fullName: string;
   email: string;
   role: string;
+  avatarUrl?: string;
+};
+
+type Post = {
+  id: string;
+  status: string;
 };
 
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -22,6 +28,11 @@ export default function DashboardPage() {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user ?? null);
+      }
+      const postResponse = await fetch("/api/writer/posts");
+      if (postResponse.ok) {
+        const postData = await postResponse.json();
+        setPosts(postData.posts ?? []);
       }
       setLoading(false);
     }
@@ -46,31 +57,68 @@ export default function DashboardPage() {
       <main className="container stack">
         <h1>Dashboard</h1>
         <p>You are not logged in.</p>
-        <Link className="button" href="/auth/login">
+        <button className="button" onClick={() => router.push("/auth/login")}>
           Login
-        </Link>
+        </button>
       </main>
     );
   }
 
+  const totalPosts = posts.length;
+  const pendingPosts = posts.filter((post) => post.status === "submitted").length;
+  const draftPosts = posts.filter((post) => post.status === "draft").length;
+  const publishedPosts = posts.filter((post) => post.status === "approved").length;
+
   return (
     <main className="container stack">
-      <h1>Welcome, {user.fullName}</h1>
+      <div className="card stack dashboard-profile">
+        <div className="dashboard-profile__avatar">
+          {user.avatarUrl ? (
+            <img src={user.avatarUrl} alt={user.fullName} />
+          ) : (
+            <span>{user.fullName.charAt(0)}</span>
+          )}
+        </div>
+        <div>
+          <h1>{user.fullName}</h1>
+          <p>{user.email}</p>
+        </div>
+      </div>
       <div className="card stack">
-        <p>Email: {user.email}</p>
-        <p>Role: {user.role}</p>
+        <h2>Quick actions</h2>
         <div className="stack" style={{ gap: 8 }}>
-          <Link className="button secondary" href="/dashboard/writer">
-            Writer tools
-          </Link>
-          <Link className="button secondary" href="/profile">
+          <button className="button" onClick={() => router.push("/dashboard/writer/new")}>
+            Create post
+          </button>
+          <button className="button secondary" onClick={() => router.push("/dashboard/writer/posts")}>
+            Manage posts
+          </button>
+          <button className="button secondary" onClick={() => router.push("/profile")}>
             Profile
-          </Link>
+          </button>
           {user.role === "admin" ? (
-            <Link className="button secondary" href="/dashboard/admin">
+            <button className="button secondary" onClick={() => router.push("/dashboard/admin")}>
               Admin tools
-            </Link>
+            </button>
           ) : null}
+        </div>
+      </div>
+      <div className="grid two">
+        <div className="card stack">
+          <h3>Your total posts</h3>
+          <p>{totalPosts}</p>
+        </div>
+        <div className="card stack">
+          <h3>Pending posts</h3>
+          <p>{pendingPosts}</p>
+        </div>
+        <div className="card stack">
+          <h3>Draft posts</h3>
+          <p>{draftPosts}</p>
+        </div>
+        <div className="card stack">
+          <h3>Published posts</h3>
+          <p>{publishedPosts}</p>
         </div>
       </div>
       <button className="button secondary" onClick={handleLogout}>
