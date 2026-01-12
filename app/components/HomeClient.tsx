@@ -92,6 +92,15 @@ function formatDateShort(iso: string) {
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+function buildQuery(params: Record<string, string | undefined>) {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) search.set(key, value);
+  });
+  const query = search.toString();
+  return query ? `?${query}` : "";
+}
+
 function estimateReadMinutes(post: Post) {
   // prefer engagement avg seconds if present
   const count = post.engagementCount ?? 0;
@@ -409,7 +418,7 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
                 Latest
               </h2>
 
-              <Link className={styles.viewAllLink} href="/posts">
+              <Link className={styles.viewAllLink} href="/categories/view-all">
                 View all
                 <ArrowRight size={14} />
               </Link>
@@ -435,12 +444,18 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
                 {categoryPosts.map((group) => (
                   <section key={group.category} className={styles.catBlock}>
                     <div className={styles.catHeader}>
-                      <div className={styles.catName}>
+                      <Link
+                        className={styles.catName}
+                        href={`/categories${buildQuery({ cat: group.category })}`}
+                      >
                         <span>{group.category}</span>
                         <span className={styles.catPill}>Top</span>
-                      </div>
+                      </Link>
 
-                      <Link className={styles.catMore} href="/posts">
+                      <Link
+                        className={styles.catMore}
+                        href={`/categories/view-all${buildQuery({ cat: group.category })}`}
+                      >
                         View all
                       </Link>
                     </div>

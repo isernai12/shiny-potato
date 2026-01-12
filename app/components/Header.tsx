@@ -242,7 +242,7 @@ export default function Header() {
             <span>Home</span>
           </Link>
 
-          <Link className="writoMenuItem" href="/posts" onClick={closeAll}>
+          <Link className="writoMenuItem" href="/categories/view-all" onClick={closeAll}>
             <Clock />
             <span>Latest</span>
           </Link>
