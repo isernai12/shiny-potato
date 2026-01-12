@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     const updates: {
       fullName?: string;
       avatarUrl?: string;
+      bio?: string;
       passwordHash?: string;
     } = {};
 
@@ -30,6 +31,9 @@ export async function POST(request: NextRequest) {
     }
     if (typeof body.avatarUrl === "string") {
       updates.avatarUrl = body.avatarUrl || undefined;
+    }
+    if (typeof body.bio === "string") {
+      updates.bio = body.bio;
     }
     if (body.password || body.confirmPassword) {
       if (body.password !== body.confirmPassword) {

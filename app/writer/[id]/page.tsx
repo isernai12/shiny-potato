@@ -26,7 +26,7 @@ export default async function WriterPublicPage({
   );
   const recent = sorted.slice(0, 5);
   const paged = sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-  const hasNext = sorted.length > currentPage * PAGE_SIZE;
+  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
 
   return (
     <main className="container stack">
@@ -64,7 +64,7 @@ export default async function WriterPublicPage({
       </section>
 
       <section className="stack">
-        <h2>All posts</h2>
+        <h2>Posts</h2>
         {paged.length === 0 ? (
           <p>No posts found.</p>
         ) : (
@@ -81,16 +81,18 @@ export default async function WriterPublicPage({
           </div>
         )}
         <div className="pager">
-          {currentPage > 1 ? (
-            <Link className="button secondary" href={`/writer/${params.id}?page=${currentPage - 1}`}>
-              Previous
-            </Link>
-          ) : null}
-          {hasNext ? (
-            <Link className="button secondary" href={`/writer/${params.id}?page=${currentPage + 1}`}>
-              Next
-            </Link>
-          ) : null}
+          {Array.from({ length: pageCount }).map((_, index) => {
+            const pageNumber = index + 1;
+            return (
+              <Link
+                key={pageNumber}
+                className={`button secondary ${pageNumber === currentPage ? "active" : ""}`}
+                href={`/writer/${params.id}?page=${pageNumber}`}
+              >
+                {pageNumber}
+              </Link>
+            );
+          })}
         </div>
       </section>
     </main>

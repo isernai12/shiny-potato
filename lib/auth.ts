@@ -12,6 +12,7 @@ export function sanitizeUser(user: User) {
     email: user.email,
     fullName: user.fullName,
     avatarUrl: user.avatarUrl,
+    bio: user.bio,
     role: user.role,
     suspended: user.suspended ?? false,
     createdAt: user.createdAt

@@ -17,6 +17,10 @@ export async function readUsers() {
       needsRewrite = true;
       return { ...user, suspended: false };
     }
+    if (user.bio === undefined) {
+      needsRewrite = true;
+      return { ...user, bio: "" };
+    }
     return user;
   });
   if (data.records.length === 0) {
@@ -26,6 +30,7 @@ export async function readUsers() {
       id: randomUUID(),
       email: "admin@writo.local",
       fullName: "Default Admin",
+      bio: "",
       passwordHash,
       role: "admin",
       suspended: false,
@@ -91,7 +96,7 @@ export async function updateUserRole(userId: string, role: Role) {
 
 export async function updateUserProfile(
   userId: string,
-  updates: Partial<Pick<User, "fullName" | "avatarUrl" | "passwordHash">>
+  updates: Partial<Pick<User, "fullName" | "avatarUrl" | "passwordHash" | "bio">>
 ) {
   const data = await readUsers();
   let found = false;

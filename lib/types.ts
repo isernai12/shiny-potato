@@ -5,6 +5,7 @@ export type User = {
   email: string;
   fullName: string;
   avatarUrl?: string;
+  bio?: string;
   passwordHash: string;
   role: Role;
   suspended?: boolean;

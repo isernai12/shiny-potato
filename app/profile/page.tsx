@@ -8,6 +8,7 @@ type User = {
   fullName: string;
   email: string;
   avatarUrl?: string;
+  bio?: string;
   role: string;
 };
 
@@ -17,6 +18,7 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [bio, setBio] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -33,6 +35,7 @@ export default function ProfilePage() {
       setUser(data.user);
       setFullName(data.user?.fullName ?? "");
       setAvatarUrl(data.user?.avatarUrl ?? "");
+      setBio(data.user?.bio ?? "");
     }
     load();
   }, []);
@@ -67,7 +70,13 @@ export default function ProfilePage() {
     const response = await fetch("/api/profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, avatarUrl: updatedAvatarUrl, password, confirmPassword })
+      body: JSON.stringify({
+        fullName,
+        avatarUrl: updatedAvatarUrl,
+        bio,
+        password,
+        confirmPassword
+      })
     });
     if (!response.ok) {
       const data = await response.json();
@@ -117,6 +126,15 @@ export default function ProfilePage() {
               className="input"
               value={avatarUrl}
               onChange={(event) => setAvatarUrl(event.target.value)}
+            />
+          </label>
+          <label className="stack" style={{ gap: 4 }}>
+            Bio
+            <textarea
+              className="textarea"
+              rows={4}
+              value={bio}
+              onChange={(event) => setBio(event.target.value)}
             />
           </label>
           <label className="stack" style={{ gap: 4 }}>
