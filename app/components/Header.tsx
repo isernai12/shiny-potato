@@ -16,6 +16,10 @@ import {
   Star,
   Sun,
   X,
+  LogIn,
+  User,
+  LayoutDashboard,
+  LogOut,
 } from "lucide-react";
 
 type BookmarkItem = {
@@ -23,6 +27,14 @@ type BookmarkItem = {
   title: string;
   slug: string;
   thumbnailUrl?: string;
+};
+
+type MeUser = {
+  id?: string;
+  name?: string;
+  fullName?: string;
+  role?: "admin" | "writer" | "user" | string;
+  suspended?: boolean;
 };
 
 const BOOKMARK_KEY = "writo_bookmarks";
@@ -55,6 +67,9 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [modal, setModal] = useState<ModalName>(null);
 
+  const [me, setMe] = useState<MeUser | null>(null);
+  const [meLoaded, setMeLoaded] = useState(false);
+
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const overlayOpen = menuOpen || modal !== null;
@@ -80,6 +95,32 @@ export default function Header() {
 
     window.addEventListener("writo-bookmarks", handleBookmarkUpdate);
     return () => window.removeEventListener("writo-bookmarks", handleBookmarkUpdate);
+  }, []);
+
+  // load current user (client-side)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/me", { cache: "no-store" });
+        if (!res.ok) {
+          setMe(null);
+          setMeLoaded(true);
+          return;
+        }
+        const data = await res.json();
+
+        // Be tolerant to different shapes:
+        // { user: {...} } or {...}
+        const user: MeUser | null = (data?.user ?? data) || null;
+        setMe(user && typeof user === "object" ? user : null);
+      } catch {
+        setMe(null);
+      } finally {
+        setMeLoaded(true);
+      }
+    })();
   }, []);
 
   // dispatch search query event (existing behavior)
@@ -168,6 +209,18 @@ export default function Header() {
     writeBookmarks(next);
   }
 
+  async function handleLogout() {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore
+    } finally {
+      closeAll();
+      window.location.href = "/";
+    }
+  }
+
+  const isAuthed = !!me && !me?.suspended;
   const overlayMenuAndModals = useMemo(() => {
     if (!mounted) return null;
 
@@ -188,6 +241,7 @@ export default function Header() {
             </button>
           </div>
 
+          {/* Main nav */}
           <Link className="writoMenuItem" href="/" onClick={closeAll}>
             <Home size={20} strokeWidth={1.5} />
             <span>Home</span>
@@ -212,6 +266,42 @@ export default function Header() {
             <Star size={20} strokeWidth={1.5} />
             <span>Featured</span>
           </button>
+
+          {/* Account section */}
+          {meLoaded ? (
+            <>
+              {!isAuthed ? (
+                <>
+                  <Link className="writoMenuItem" href="/auth/login" onClick={closeAll}>
+                    <LogIn size={20} strokeWidth={1.5} />
+                    <span>Login</span>
+                  </Link>
+
+                  <Link className="writoMenuItem" href="/auth/register" onClick={closeAll}>
+                    <User size={20} strokeWidth={1.5} />
+                    <span>Sign up</span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link className="writoMenuItem" href="/profile" onClick={closeAll}>
+                    <User size={20} strokeWidth={1.5} />
+                    <span>Profile</span>
+                  </Link>
+
+                  <Link className="writoMenuItem" href="/dashboard" onClick={closeAll}>
+                    <LayoutDashboard size={20} strokeWidth={1.5} />
+                    <span>Dashboard</span>
+                  </Link>
+
+                  <button className="writoMenuItem" type="button" onClick={handleLogout}>
+                    <LogOut size={20} strokeWidth={1.5} />
+                    <span>Logout</span>
+                  </button>
+                </>
+              )}
+            </>
+          ) : null}
         </aside>
 
         {/* Search Modal */}
@@ -319,7 +409,7 @@ export default function Header() {
       </>,
       document.body
     );
-  }, [mounted, menuOpen, modal, query, bookmarks]);
+  }, [mounted, menuOpen, modal, query, bookmarks, meLoaded, isAuthed]);
 
   return (
     <>
@@ -348,11 +438,7 @@ export default function Header() {
           </button>
 
           <button className="writoIconBtn" type="button" onClick={toggleTheme} aria-label="Toggle theme">
-            {darkMode ? (
-              <Sun size={20} strokeWidth={1.5} />
-            ) : (
-              <Moon size={20} strokeWidth={1.5} />
-            )}
+            {darkMode ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
           </button>
         </div>
       </header>
