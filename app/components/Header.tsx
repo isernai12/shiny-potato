@@ -3,7 +3,20 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { BookmarkIcon, MenuIcon, MoonIcon, SearchIcon, SunIcon } from "./icons";
+import {
+  Bookmark,
+  Clock,
+  Flame,
+  Home,
+  Languages,
+  LayoutGrid,
+  Menu,
+  Moon,
+  Search,
+  Star,
+  Sun,
+  X,
+} from "lucide-react";
 
 type BookmarkItem = {
   id: string;
@@ -165,28 +178,38 @@ export default function Header() {
         {/* Side Menu */}
         <aside className="writoMenu" id="writoMenu" aria-hidden={!menuOpen}>
           <div className="writoMenuHeader">
-            <button className="writoIconBtn" type="button" onClick={() => setMenuOpen(false)} aria-label="Close menu">
-              ✕
+            <button
+              className="writoIconBtn"
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <X size={20} strokeWidth={1.5} />
             </button>
           </div>
 
           <Link className="writoMenuItem" href="/" onClick={closeAll}>
+            <Home size={20} strokeWidth={1.5} />
             <span>Home</span>
           </Link>
 
           <button className="writoMenuItem" type="button" disabled aria-disabled="true">
+            <LayoutGrid size={20} strokeWidth={1.5} />
             <span>Categories</span>
           </button>
 
           <Link className="writoMenuItem" href="/posts" onClick={closeAll}>
+            <Clock size={20} strokeWidth={1.5} />
             <span>Latest</span>
           </Link>
 
           <button className="writoMenuItem" type="button" disabled aria-disabled="true">
+            <Flame size={20} strokeWidth={1.5} />
             <span>Trending</span>
           </button>
 
           <button className="writoMenuItem" type="button" disabled aria-disabled="true">
+            <Star size={20} strokeWidth={1.5} />
             <span>Featured</span>
           </button>
         </aside>
@@ -200,10 +223,10 @@ export default function Header() {
           <div className="writoModalInner">
             <div className="writoModalHead">
               <div className="writoModalTitle">
-                <SearchIcon /> Search
+                <Search size={20} strokeWidth={1.5} /> Search
               </div>
               <button className="writoModalClose" type="button" onClick={closeAll} aria-label="Close">
-                ✕
+                <X size={20} strokeWidth={1.5} />
               </button>
             </div>
 
@@ -216,7 +239,7 @@ export default function Header() {
               onChange={(e) => setQuery(e.target.value)}
             />
 
-            <div className="writoHint">সার্চ UI আছে। query বদলালে "writo-search" ইভেন্ট dispatch হয়।</div>
+            <div className="writoHint">ইউজার এখানে লিখতে পারবে (ডেমো)। এখন সার্চ কাজ করবে না।</div>
           </div>
         </section>
 
@@ -229,10 +252,10 @@ export default function Header() {
           <div className="writoModalInner">
             <div className="writoModalHead">
               <div className="writoModalTitle">
-                <span style={{ fontSize: 16, lineHeight: 1 }}>🌐</span> Translate
+                <Languages size={20} strokeWidth={1.5} /> Translate
               </div>
               <button className="writoModalClose" type="button" onClick={closeAll} aria-label="Close">
-                ✕
+                <X size={20} strokeWidth={1.5} />
               </button>
             </div>
 
@@ -257,17 +280,17 @@ export default function Header() {
           <div className="writoModalInner">
             <div className="writoModalHead">
               <div className="writoModalTitle">
-                <BookmarkIcon /> Saved
+                <Bookmark size={20} strokeWidth={1.5} /> Saved
               </div>
               <button className="writoModalClose" type="button" onClick={closeAll} aria-label="Close">
-                ✕
+                <X size={20} strokeWidth={1.5} />
               </button>
             </div>
 
             {bookmarks.length === 0 ? (
               <div className="writoEmpty">
-                এখনো কোনো পোস্ট সেভ করা হয়নি। <br />
-                পরে এখানে সেভ করা পোস্টগুলো দেখাবে — আপাতত ডেমো।
+                এখনো কোনো পোস্ট সেভ করা হয়নি। (ডেমো) <br />
+                পরে এখানে সেভ করা পোস্টগুলো দেখাবে — আপাতত কাজ করবে না।
               </div>
             ) : (
               <div className="writoSavedList">
@@ -278,8 +301,13 @@ export default function Header() {
                     </Link>
 
                     <div className="writoSavedActions">
-                      <button className="writoIconBtn" type="button" onClick={() => removeBookmark(item.id)} aria-label="Remove">
-                        ✕
+                      <button
+                        className="writoIconBtn"
+                        type="button"
+                        onClick={() => removeBookmark(item.id)}
+                        aria-label="Remove"
+                      >
+                        <X size={20} strokeWidth={1.5} />
                       </button>
                     </div>
                   </div>
@@ -298,7 +326,7 @@ export default function Header() {
       <header className="writoHeader">
         <div className="writoHeaderLeft">
           <button className="writoIconBtn" type="button" onClick={openMenu} aria-label="Open menu">
-            <MenuIcon />
+            <Menu size={20} strokeWidth={1.5} />
           </button>
 
           <Link className="writoBrand" href="/">
@@ -308,19 +336,23 @@ export default function Header() {
 
         <div className="writoHeaderRight">
           <button className="writoIconBtn" type="button" onClick={() => openModal("search")} aria-label="Search">
-            <SearchIcon />
+            <Search size={20} strokeWidth={1.5} />
           </button>
 
           <button className="writoIconBtn" type="button" onClick={() => openModal("saved")} aria-label="Bookmarks">
-            <BookmarkIcon />
+            <Bookmark size={20} strokeWidth={1.5} />
           </button>
 
           <button className="writoIconBtn" type="button" onClick={() => openModal("translate")} aria-label="Translate">
-            <span style={{ fontSize: 18, lineHeight: 1 }}>🌐</span>
+            <Languages size={20} strokeWidth={1.5} />
           </button>
 
           <button className="writoIconBtn" type="button" onClick={toggleTheme} aria-label="Toggle theme">
-            {darkMode ? <SunIcon /> : <MoonIcon />}
+            {darkMode ? (
+              <Sun size={20} strokeWidth={1.5} />
+            ) : (
+              <Moon size={20} strokeWidth={1.5} />
+            )}
           </button>
         </div>
       </header>
