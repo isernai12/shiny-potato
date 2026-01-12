@@ -10,6 +10,12 @@
   font-family: var(--font-outfit), "Inter", system-ui, sans-serif;
   line-height: 1.5;
 
+  /* Home tokens (only variables, no home CSS) */
+  --shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+  --imgBoxBg: #e9edf6;
+  --imgBoxSoft: #f2f3f7;
+  --scrollThumb: rgba(15, 23, 42, 0.18);
+
   /* Writo tokens */
   --bg: #f1f5f9;
   --text: #0f172a;
@@ -44,6 +50,12 @@ html.dark:root {
   --border: rgba(255, 255, 255, 0.1);
   --soft: rgba(255, 255, 255, 0.06);
   --softBorder: rgba(255, 255, 255, 0.12);
+
+  /* Home tokens (dark) */
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --imgBoxBg: rgba(255, 255, 255, 0.06);
+  --imgBoxSoft: rgba(255, 255, 255, 0.06);
+  --scrollThumb: rgba(255, 255, 255, 0.22);
 }
 
 body {
