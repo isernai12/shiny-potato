@@ -83,7 +83,8 @@ body.hasOverlay .pageBlur {
 /* lucide-react: keep consistent look */
 .writoHeader svg,
 .writoMenu svg,
-.writoModal svg {
+.writoModal svg,
+.writoFooter svg {
   width: 20px;
   height: 20px;
   display: block;
@@ -412,6 +413,59 @@ html.dark .writoSavedItem {
   gap: 8px;
 }
 
+/* ===== Footer (Layout-level) ===== */
+.writoFooter {
+  margin-top: 28px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+}
+
+html.dark .writoFooter {
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(10, 10, 10, 0.55);
+}
+
+.writoFooterInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.writoFooterBrand {
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.writoFooterMeta {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.writoFooterLinks {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.writoFooterLink {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.writoFooterLink:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 520px) {
   .writoHeader {
@@ -430,5 +484,9 @@ html.dark .writoSavedItem {
 
   .writoModal {
     top: 74px;
+  }
+
+  .writoFooterInner {
+    align-items: flex-start;
   }
 }
