@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: writo
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    disk:
+      name: writo-data
+      mountPath: /data
+      sizeGB: 1
