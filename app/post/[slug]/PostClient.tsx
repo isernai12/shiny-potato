@@ -58,6 +58,11 @@ type TocSection = {
   id: string;
 };
 
+type ParsedContent = {
+  introHtml: string | null;
+  sections: TocSection[];
+};
+
 type BookmarkItem = {
   id: string;
   title: string;
@@ -89,14 +94,17 @@ function normalizeContent(raw: string) {
     .join("\n");
 }
 
-function parseContent(content: string): TocSection[] {
+function parseContent(content: string): ParsedContent {
   const lines = content.replace(/\r\n/g, "\n").split("\n");
-  const marker = /^\s*type\s*:\s*(toc|into|intro)\s*<\s*([^>]+?)\s*>\s*$/i;
+  const marker = /^\s*type\s*:\s*(toc|into|intro)\s*<\s*(.+)\s*>\s*$/i;
   const sections: { title: string; html: string }[] = [];
-  let current = { title: "Introduction", html: "" };
-  let sawMarker = false;
+  let current: { title: string; html: string } | null = null;
+  let introHtml: string | null = null;
+  let sawTocMarker = false;
+  let prelude = "";
 
   const pushCurrent = () => {
+    if (!current) return;
     const html = normalizeContent(current.html.trim());
     if (!html) return;
     sections.push({ title: current.title || "Section", html });
@@ -105,23 +113,35 @@ function parseContent(content: string): TocSection[] {
   lines.forEach((line) => {
     const match = line.match(marker);
     if (match) {
-      sawMarker = true;
+      const type = match[1].toLowerCase();
+      if (type === "into" || type === "intro") {
+        introHtml = normalizeContent(match[2].trim());
+        return;
+      }
+      sawTocMarker = true;
+      if (prelude.trim()) {
+        sections.push({ title: "Introduction", html: normalizeContent(prelude.trim()) });
+        prelude = "";
+      }
       pushCurrent();
       current = { title: match[2].trim() || "Section", html: "" };
       return;
     }
-    current.html += `${line}\n`;
+    if (current) {
+      current.html += `${line}\n`;
+    } else {
+      prelude += `${line}\n`;
+    }
   });
 
   pushCurrent();
 
-  if (!sawMarker && content.trim()) {
-    const html = normalizeContent(content.trim());
-    return [{ title: "Introduction", html, id: "introduction" }];
+  if (!sawTocMarker && content.trim() && sections.length === 0) {
+    sections.push({ title: "Introduction", html: normalizeContent(content.trim()) });
   }
 
   const used = new Set<string>();
-  return sections.map((section, index) => {
+  const mapped = sections.map((section, index) => {
     let id = slugifyId(section.title) || "section";
     if (used.has(id)) {
       id = `${id}-${index + 1}`;
@@ -129,6 +149,12 @@ function parseContent(content: string): TocSection[] {
     used.add(id);
     return { ...section, id };
   });
+
+  if (prelude.trim()) {
+    introHtml = introHtml ?? normalizeContent(prelude.trim());
+  }
+
+  return { introHtml, sections: mapped };
 }
 
 function readBookmarks(): BookmarkItem[] {
@@ -176,14 +202,25 @@ export default function PostClient({
   const ringRef = useRef<SVGPathElement | null>(null);
   const trackerRef = useRef<HTMLDivElement | null>(null);
 
-  const tocSections = useMemo(() => parseContent(post.content || ""), [post.content]);
+  const parsed = useMemo(() => parseContent(post.content || ""), [post.content]);
 
   const tocItems = useMemo(() => {
-    const items = [...tocSections];
+    const items = [...parsed.sections];
     items.push({ title: "Comments", html: "", id: "comments" });
     items.push({ title: "Related posts", html: "", id: "related-posts" });
     return items;
-  }, [tocSections]);
+  }, [parsed.sections]);
+
+  const trackedItems = useMemo(() => {
+    const items: { title: string; id: string }[] = [];
+    if (parsed.introHtml) {
+      items.push({ title: "Introduction", id: "introduction" });
+    }
+    parsed.sections.forEach((section) => items.push({ title: section.title, id: section.id }));
+    items.push({ title: "Comments", id: "comments" });
+    items.push({ title: "Related posts", id: "related-posts" });
+    return items;
+  }, [parsed.introHtml, parsed.sections]);
 
   const readMinutes = useMemo(() => {
     const words = post.content ? post.content.trim().split(/\s+/).length : 0;
@@ -321,7 +358,8 @@ export default function PostClient({
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
         if (visible.length) {
-          const idx = nodes.indexOf(visible[0].target as HTMLElement);
+          const id = (visible[0].target as HTMLElement).id;
+          const idx = trackedItems.findIndex((item) => item.id === id);
           if (idx >= 0) setActiveIndex(idx);
         } else if (window.scrollY <= 4) {
           setActiveIndex(0);
@@ -332,7 +370,7 @@ export default function PostClient({
 
     nodes.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, [post.id, tocItems.length, observerKey]);
+  }, [post.id, tocItems.length, observerKey, trackedItems]);
 
   useEffect(() => {
     let raf = 0;
@@ -506,7 +544,7 @@ export default function PostClient({
           </div>
 
           <div className={styles.trackerTitle}>
-            <span>{tocItems[activeIndex]?.title ?? "Introduction"}</span>
+            <span>{trackedItems[activeIndex]?.title ?? "Introduction"}</span>
           </div>
 
           <button
@@ -522,10 +560,12 @@ export default function PostClient({
         </div>
         <div ref={tocRef} className={styles.tocPanel} data-open={tocOpen}>
           <div className={styles.tocListWrap}>
-            {tocItems.map((item, index) => (
+            {tocItems.map((item) => (
               <div
                 key={item.id}
-                className={`${styles.tocItem} ${index === activeIndex ? styles.tocItemActive : ""}`}
+                className={`${styles.tocItem} ${
+                  trackedItems[activeIndex]?.id === item.id ? styles.tocItemActive : ""
+                }`}
                 onClick={() => {
                   scrollToSection(item.id);
                   setTocOpen(false);
@@ -664,7 +704,20 @@ export default function PostClient({
         </div>
 
         <div className={styles.content}>
-          {tocSections.map((section) => (
+          {parsed.introHtml ? (
+            <section
+              id="introduction"
+              data-track="true"
+              data-title="Introduction"
+              className={styles.intro}
+            >
+              <div
+                className={styles.note}
+                dangerouslySetInnerHTML={{ __html: parsed.introHtml }}
+              />
+            </section>
+          ) : null}
+          {parsed.sections.map((section) => (
             <section
               key={section.id}
               id={section.id}

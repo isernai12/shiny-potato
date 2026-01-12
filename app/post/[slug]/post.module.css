@@ -390,8 +390,8 @@
   padding-right: 10px;
 }
 
-.section {
-  scroll-margin-top: calc(var(--stackH) + 24px);
+.postPage :global([data-track="true"]) {
+  scroll-margin-top: calc(var(--stackH) + 14px);
 }
 
 .section h2 {
@@ -459,6 +459,15 @@
   border: 1px solid rgba(15, 23, 42, 0.1);
   background: rgba(15, 23, 42, 0.03);
   color: rgba(15, 23, 42, 0.7);
+}
+
+.note b {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.intro {
+  margin-bottom: 10px;
 }
 
 .tagRow {
