@@ -3,23 +3,24 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 import {
   Bookmark,
   Clock,
   Flame,
+  Github,
   Home,
   Languages,
+  LayoutDashboard,
   LayoutGrid,
-  Menu,
-  Moon,
+  LogIn,
+  LogOut,
   Search,
   Star,
-  Sun,
+  UserCircle2,
   X,
-  LogIn,
-  User,
-  LayoutDashboard,
-  LogOut,
+  Moon,
+  Sun,
 } from "lucide-react";
 
 type BookmarkItem = {
@@ -32,10 +33,10 @@ type BookmarkItem = {
 type MeUser = {
   id?: string;
   name?: string;
-  fullName?: string;
+  email?: string;
   role?: "admin" | "writer" | "user" | string;
   suspended?: boolean;
-};
+} | null;
 
 const BOOKMARK_KEY = "writo_bookmarks";
 
@@ -58,7 +59,11 @@ function writeBookmarks(items: BookmarkItem[]) {
 type ModalName = "search" | "saved" | "translate" | null;
 
 export default function Header() {
+  const router = useRouter();
+
   const [mounted, setMounted] = useState(false);
+
+  const [me, setMe] = useState<MeUser>(null);
 
   const [query, setQuery] = useState("");
   const [bookmarks, setBookmarks] = useState<BookmarkItem[]>([]);
@@ -67,23 +72,42 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [modal, setModal] = useState<ModalName>(null);
 
-  const [me, setMe] = useState<MeUser | null>(null);
-  const [meLoaded, setMeLoaded] = useState(false);
-
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const overlayOpen = menuOpen || modal !== null;
 
+  // init
   useEffect(() => {
     setMounted(true);
 
     setBookmarks(readBookmarks());
 
+    // theme
     const storedTheme = window.localStorage.getItem("writo_theme");
     if (storedTheme === "dark") {
       document.documentElement.classList.add("dark");
       setDarkMode(true);
     }
+
+    // current user (for menu: login/signup vs profile/dashboard/logout)
+    (async () => {
+      try {
+        const res = await fetch("/api/me", { cache: "no-store" });
+        if (!res.ok) {
+          setMe(null);
+          return;
+        }
+        const data = await res.json();
+
+        // support both shapes:
+        // 1) { user: {...} }
+        // 2) {...user fields...}
+        const user = (data?.user ?? data) as MeUser;
+        setMe(user ?? null);
+      } catch {
+        setMe(null);
+      }
+    })();
 
     function handleBookmarkUpdate(event: Event) {
       const custom = event as CustomEvent<BookmarkItem[]>;
@@ -95,32 +119,6 @@ export default function Header() {
 
     window.addEventListener("writo-bookmarks", handleBookmarkUpdate);
     return () => window.removeEventListener("writo-bookmarks", handleBookmarkUpdate);
-  }, []);
-
-  // load current user (client-side)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    (async () => {
-      try {
-        const res = await fetch("/api/me", { cache: "no-store" });
-        if (!res.ok) {
-          setMe(null);
-          setMeLoaded(true);
-          return;
-        }
-        const data = await res.json();
-
-        // Be tolerant to different shapes:
-        // { user: {...} } or {...}
-        const user: MeUser | null = (data?.user ?? data) || null;
-        setMe(user && typeof user === "object" ? user : null);
-      } catch {
-        setMe(null);
-      } finally {
-        setMeLoaded(true);
-      }
-    })();
   }, []);
 
   // dispatch search query event (existing behavior)
@@ -209,20 +207,22 @@ export default function Header() {
     writeBookmarks(next);
   }
 
-  async function handleLogout() {
+  async function doLogout() {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch {
       // ignore
-    } finally {
-      closeAll();
-      window.location.href = "/";
     }
+    setMe(null);
+    closeAll();
+    router.push("/");
+    router.refresh();
   }
 
-  const isAuthed = !!me && !me?.suspended;
   const overlayMenuAndModals = useMemo(() => {
     if (!mounted) return null;
+
+    const authed = !!me;
 
     return createPortal(
       <>
@@ -231,77 +231,68 @@ export default function Header() {
         {/* Side Menu */}
         <aside className="writoMenu" id="writoMenu" aria-hidden={!menuOpen}>
           <div className="writoMenuHeader">
-            <button
-              className="writoIconBtn"
-              type="button"
-              onClick={() => setMenuOpen(false)}
-              aria-label="Close menu"
-            >
-              <X size={20} strokeWidth={1.5} />
+            <button className="writoIconBtn" type="button" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+              <X />
             </button>
           </div>
 
-          {/* Main nav */}
+          {/* Main */}
           <Link className="writoMenuItem" href="/" onClick={closeAll}>
-            <Home size={20} strokeWidth={1.5} />
+            <Home />
             <span>Home</span>
           </Link>
 
-          <button className="writoMenuItem" type="button" disabled aria-disabled="true">
-            <LayoutGrid size={20} strokeWidth={1.5} />
-            <span>Categories</span>
-          </button>
-
           <Link className="writoMenuItem" href="/posts" onClick={closeAll}>
-            <Clock size={20} strokeWidth={1.5} />
+            <Clock />
             <span>Latest</span>
           </Link>
 
           <button className="writoMenuItem" type="button" disabled aria-disabled="true">
-            <Flame size={20} strokeWidth={1.5} />
+            <LayoutGrid />
+            <span>Categories</span>
+          </button>
+
+          <button className="writoMenuItem" type="button" disabled aria-disabled="true">
+            <Flame />
             <span>Trending</span>
           </button>
 
           <button className="writoMenuItem" type="button" disabled aria-disabled="true">
-            <Star size={20} strokeWidth={1.5} />
+            <Star />
             <span>Featured</span>
           </button>
 
-          {/* Account section */}
-          {meLoaded ? (
+          {/* Auth-aware section (এইটাই আগে SideMenu.tsx-এ ছিল) */}
+          {authed ? (
             <>
-              {!isAuthed ? (
-                <>
-                  <Link className="writoMenuItem" href="/auth/login" onClick={closeAll}>
-                    <LogIn size={20} strokeWidth={1.5} />
-                    <span>Login</span>
-                  </Link>
+              <Link className="writoMenuItem" href="/dashboard" onClick={closeAll}>
+                <LayoutDashboard />
+                <span>Dashboard</span>
+              </Link>
 
-                  <Link className="writoMenuItem" href="/auth/register" onClick={closeAll}>
-                    <User size={20} strokeWidth={1.5} />
-                    <span>Sign up</span>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link className="writoMenuItem" href="/profile" onClick={closeAll}>
-                    <User size={20} strokeWidth={1.5} />
-                    <span>Profile</span>
-                  </Link>
+              <Link className="writoMenuItem" href="/profile" onClick={closeAll}>
+                <UserCircle2 />
+                <span>Profile</span>
+              </Link>
 
-                  <Link className="writoMenuItem" href="/dashboard" onClick={closeAll}>
-                    <LayoutDashboard size={20} strokeWidth={1.5} />
-                    <span>Dashboard</span>
-                  </Link>
-
-                  <button className="writoMenuItem" type="button" onClick={handleLogout}>
-                    <LogOut size={20} strokeWidth={1.5} />
-                    <span>Logout</span>
-                  </button>
-                </>
-              )}
+              <button className="writoMenuItem" type="button" onClick={doLogout}>
+                <LogOut />
+                <span>Logout</span>
+              </button>
             </>
-          ) : null}
+          ) : (
+            <>
+              <Link className="writoMenuItem" href="/auth/login" onClick={closeAll}>
+                <LogIn />
+                <span>Login</span>
+              </Link>
+
+              <Link className="writoMenuItem" href="/auth/register" onClick={closeAll}>
+                <UserCircle2 />
+                <span>Sign up</span>
+              </Link>
+            </>
+          )}
         </aside>
 
         {/* Search Modal */}
@@ -313,10 +304,10 @@ export default function Header() {
           <div className="writoModalInner">
             <div className="writoModalHead">
               <div className="writoModalTitle">
-                <Search size={20} strokeWidth={1.5} /> Search
+                <Search /> Search
               </div>
               <button className="writoModalClose" type="button" onClick={closeAll} aria-label="Close">
-                <X size={20} strokeWidth={1.5} />
+                <X />
               </button>
             </div>
 
@@ -329,7 +320,7 @@ export default function Header() {
               onChange={(e) => setQuery(e.target.value)}
             />
 
-            <div className="writoHint">ইউজার এখানে লিখতে পারবে (ডেমো)। এখন সার্চ কাজ করবে না।</div>
+            <div className="writoHint">সার্চ UI আছে। query বদলালে "writo-search" ইভেন্ট dispatch হয়।</div>
           </div>
         </section>
 
@@ -342,10 +333,10 @@ export default function Header() {
           <div className="writoModalInner">
             <div className="writoModalHead">
               <div className="writoModalTitle">
-                <Languages size={20} strokeWidth={1.5} /> Translate
+                <Languages /> Translate
               </div>
               <button className="writoModalClose" type="button" onClick={closeAll} aria-label="Close">
-                <X size={20} strokeWidth={1.5} />
+                <X />
               </button>
             </div>
 
@@ -370,17 +361,17 @@ export default function Header() {
           <div className="writoModalInner">
             <div className="writoModalHead">
               <div className="writoModalTitle">
-                <Bookmark size={20} strokeWidth={1.5} /> Saved
+                <Bookmark /> Saved
               </div>
               <button className="writoModalClose" type="button" onClick={closeAll} aria-label="Close">
-                <X size={20} strokeWidth={1.5} />
+                <X />
               </button>
             </div>
 
             {bookmarks.length === 0 ? (
               <div className="writoEmpty">
-                এখনো কোনো পোস্ট সেভ করা হয়নি। (ডেমো) <br />
-                পরে এখানে সেভ করা পোস্টগুলো দেখাবে — আপাতত কাজ করবে না।
+                এখনো কোনো পোস্ট সেভ করা হয়নি। <br />
+                পরে এখানে সেভ করা পোস্টগুলো দেখাবে — আপাতত ডেমো।
               </div>
             ) : (
               <div className="writoSavedList">
@@ -397,7 +388,7 @@ export default function Header() {
                         onClick={() => removeBookmark(item.id)}
                         aria-label="Remove"
                       >
-                        <X size={20} strokeWidth={1.5} />
+                        <X />
                       </button>
                     </div>
                   </div>
@@ -409,14 +400,14 @@ export default function Header() {
       </>,
       document.body
     );
-  }, [mounted, menuOpen, modal, query, bookmarks, meLoaded, isAuthed]);
+  }, [mounted, menuOpen, modal, query, bookmarks, me, router]);
 
   return (
     <>
       <header className="writoHeader">
         <div className="writoHeaderLeft">
           <button className="writoIconBtn" type="button" onClick={openMenu} aria-label="Open menu">
-            <Menu size={20} strokeWidth={1.5} />
+            <LayoutGrid />
           </button>
 
           <Link className="writoBrand" href="/">
@@ -426,19 +417,19 @@ export default function Header() {
 
         <div className="writoHeaderRight">
           <button className="writoIconBtn" type="button" onClick={() => openModal("search")} aria-label="Search">
-            <Search size={20} strokeWidth={1.5} />
+            <Search />
           </button>
 
           <button className="writoIconBtn" type="button" onClick={() => openModal("saved")} aria-label="Bookmarks">
-            <Bookmark size={20} strokeWidth={1.5} />
+            <Bookmark />
           </button>
 
           <button className="writoIconBtn" type="button" onClick={() => openModal("translate")} aria-label="Translate">
-            <Languages size={20} strokeWidth={1.5} />
+            <Languages />
           </button>
 
           <button className="writoIconBtn" type="button" onClick={toggleTheme} aria-label="Toggle theme">
-            {darkMode ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
+            {darkMode ? <Sun /> : <Moon />}
           </button>
         </div>
       </header>
