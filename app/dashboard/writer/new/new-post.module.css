@@ -1,0 +1,175 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+  display: grid;
+  gap: 20px;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.titleBlock h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.titleBlock p {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.instructions {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.instructions h2 {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.instructions ol {
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.formCard {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 18px;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.fieldGroup {
+  display: grid;
+  gap: 8px;
+}
+
+.fieldGroup label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--softBorder);
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.55);
+  outline: none;
+}
+
+:global(html.dark) .input,
+:global(html.dark) .select,
+:global(html.dark) .textarea {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.textarea {
+  min-height: 160px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.helperText {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.notice {
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+:global(html:not(.dark)) .notice {
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.noticeError {
+  color: #ff8a8a;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton {
+  border: none;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.primaryButton {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text);
+}
+
+:global(html:not(.dark)) .primaryButton {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.secondaryButton {
+  background: transparent;
+  border: 1px solid var(--softBorder);
+  color: var(--text);
+}
+
+.helperRow {
+  display: grid;
+  gap: 6px;
+}
+
+.tocHint {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  background: var(--soft);
+  border: 1px dashed var(--softBorder);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.tocHint code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.12);
+  color: inherit;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
