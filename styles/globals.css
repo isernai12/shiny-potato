@@ -7,7 +7,7 @@
 
 :root {
   color-scheme: light;
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-outfit), "Inter", system-ui, sans-serif;
   line-height: 1.5;
 
   /* Writo tokens */
@@ -47,6 +47,7 @@ html.dark:root {
 }
 
 body {
+  font-family: var(--font-outfit), "Inter", system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden;
@@ -69,6 +70,7 @@ a {
   transition: filter 0.18s ease;
   will-change: filter;
 }
+
 body.menuOpen .pageBlur,
 body.hasOverlay .pageBlur {
   filter: blur(6px);
@@ -77,6 +79,15 @@ body.hasOverlay .pageBlur {
 /* =========================
    WRITO HEADER SYSTEM
 ========================= */
+
+/* lucide-react: keep consistent look */
+.writoHeader svg,
+.writoMenu svg,
+.writoModal svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
 
 /* ===== Header ===== */
 .writoHeader {
@@ -407,13 +418,16 @@ html.dark .writoSavedItem {
     padding-left: 26px;
     padding-right: 18px;
   }
+
   .writoHeaderRight {
     gap: 14px;
   }
+
   .writoIconBtn {
     width: 33px;
     height: 33px;
   }
+
   .writoModal {
     top: 74px;
   }
