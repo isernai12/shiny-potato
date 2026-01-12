@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { getUserFromSessionId } from "../../../../../lib/auth";
-import { readPosts } from "../../../../../lib/data/posts";
-import { readUsers } from "../../../../../lib/data/users";
+import { getUserFromSessionId } from "../../../../../../lib/auth";
+import { readPosts } from "../../../../../../lib/data/posts";
+import { readUsers } from "../../../../../../lib/data/users";
 
 export const dynamic = "force-dynamic";
 
