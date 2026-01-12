@@ -165,7 +165,7 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
   );
 
   const latestPosts = useMemo(
-    () => [...approvedPosts].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6),
+    () => [...approvedPosts].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5),
     [approvedPosts]
   );
 
@@ -287,7 +287,12 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
       <section className="stack">
         <div className="section-header">
           <h2>Latest Posts</h2>
-          <span className="badge">Fresh</span>
+          <div className="section-actions">
+            <span className="badge">Fresh</span>
+            <Link className="button secondary" href="/posts">
+              View all
+            </Link>
+          </div>
         </div>
         <div className="grid two">
           {latestPosts.map((post) => (

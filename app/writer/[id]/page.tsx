@@ -4,17 +4,11 @@ import { readUsers } from "../../../lib/data/users";
 
 export const dynamic = "force-dynamic";
 
-const PAGE_SIZE = 10;
-
 export default async function WriterPublicPage({
-  params,
-  searchParams
+  params
 }: {
   params: { id: string };
-  searchParams: { page?: string };
 }) {
-  const page = Number(searchParams.page ?? "1");
-  const currentPage = Number.isNaN(page) || page < 1 ? 1 : page;
   const data = await readPosts();
   const users = await readUsers();
   const writer = users.records.find((user) => user.id === params.id);
@@ -25,8 +19,6 @@ export default async function WriterPublicPage({
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
   const recent = sorted.slice(0, 5);
-  const paged = sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
 
   return (
     <main className="container stack">
@@ -45,7 +37,12 @@ export default async function WriterPublicPage({
       </div>
 
       <section className="stack">
-        <h2>Recent 5 posts</h2>
+        <div className="section-header">
+          <h2>Recent 5 posts</h2>
+          <Link className="button secondary" href={`/writer/${params.id}/posts`}>
+            View all
+          </Link>
+        </div>
         {recent.length === 0 ? (
           <p>No posts yet.</p>
         ) : (
@@ -61,39 +58,6 @@ export default async function WriterPublicPage({
             ))}
           </div>
         )}
-      </section>
-
-      <section className="stack">
-        <h2>Posts</h2>
-        {paged.length === 0 ? (
-          <p>No posts found.</p>
-        ) : (
-          <div className="stack">
-            {paged.map((post) => (
-              <div key={post.id} className="card stack">
-                <h3>{post.title}</h3>
-                <p>{post.excerpt}</p>
-                <Link className="button secondary" href={`/post/${post.slug}`}>
-                  Read post
-                </Link>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="pager">
-          {Array.from({ length: pageCount }).map((_, index) => {
-            const pageNumber = index + 1;
-            return (
-              <Link
-                key={pageNumber}
-                className={`button secondary ${pageNumber === currentPage ? "active" : ""}`}
-                href={`/writer/${params.id}?page=${pageNumber}`}
-              >
-                {pageNumber}
-              </Link>
-            );
-          })}
-        </div>
       </section>
     </main>
   );
