@@ -28,9 +28,11 @@ export default function WriterDashboard() {
     title: "",
     content: "",
     excerpt: "",
-    coverImageUrl: "",
     tags: ""
   });
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [latestThumbFile, setLatestThumbFile] = useState<File | null>(null);
+  const [trendingThumbFile, setTrendingThumbFile] = useState<File | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -64,6 +66,32 @@ export default function WriterDashboard() {
     event.preventDefault();
     setMessage("");
     setError("");
+    async function uploadFile(file: File | null) {
+      if (!file) return undefined;
+      const formData = new FormData();
+      formData.append("file", file);
+      const uploadResponse = await fetch("/api/uploads", {
+        method: "POST",
+        body: formData
+      });
+      if (!uploadResponse.ok) {
+        const data = await uploadResponse.json();
+        throw new Error(data.error || "Upload failed");
+      }
+      const data = await uploadResponse.json();
+      return data.url as string;
+    }
+    let coverImageUrl: string | undefined;
+    let thumbnailLatestUrl: string | undefined;
+    let thumbnailTrendingUrl: string | undefined;
+    try {
+      coverImageUrl = await uploadFile(coverFile);
+      thumbnailLatestUrl = await uploadFile(latestThumbFile);
+      thumbnailTrendingUrl = await uploadFile(trendingThumbFile);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+      return;
+    }
     const response = await fetch("/api/writer/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -71,7 +99,9 @@ export default function WriterDashboard() {
         title: form.title,
         content: form.content,
         excerpt: form.excerpt,
-        coverImageUrl: form.coverImageUrl || undefined,
+        coverImageUrl,
+        thumbnailLatestUrl,
+        thumbnailTrendingUrl,
         tags: form.tags
           .split(",")
           .map((tag) => tag.trim())
@@ -85,7 +115,10 @@ export default function WriterDashboard() {
     }
     const data = await response.json();
     setPosts((prev) => [data.post, ...prev]);
-    setForm({ title: "", content: "", excerpt: "", coverImageUrl: "", tags: "" });
+    setForm({ title: "", content: "", excerpt: "", tags: "" });
+    setCoverFile(null);
+    setLatestThumbFile(null);
+    setTrendingThumbFile(null);
     setMessage("Draft created.");
   }
 
@@ -144,14 +177,33 @@ export default function WriterDashboard() {
               onChange={(event) => setForm({ ...form, excerpt: event.target.value })}
               required
             />
-            <input
-              className="input"
-              placeholder="Cover image URL"
-              value={form.coverImageUrl}
-              onChange={(event) =>
-                setForm({ ...form, coverImageUrl: event.target.value })
-              }
-            />
+            <label className="stack" style={{ gap: 4 }}>
+              Cover Image
+              <input
+                className="input"
+                type="file"
+                accept="image/*"
+                onChange={(event) => setCoverFile(event.target.files?.[0] ?? null)}
+              />
+            </label>
+            <label className="stack" style={{ gap: 4 }}>
+              Latest Thumbnail
+              <input
+                className="input"
+                type="file"
+                accept="image/*"
+                onChange={(event) => setLatestThumbFile(event.target.files?.[0] ?? null)}
+              />
+            </label>
+            <label className="stack" style={{ gap: 4 }}>
+              Trending Thumbnail
+              <input
+                className="input"
+                type="file"
+                accept="image/*"
+                onChange={(event) => setTrendingThumbFile(event.target.files?.[0] ?? null)}
+              />
+            </label>
             <input
               className="input"
               placeholder="Tags (comma separated)"

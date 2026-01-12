@@ -37,6 +37,8 @@ export type Post = {
   content: string;
   excerpt: string;
   coverImageUrl?: string;
+  thumbnailLatestUrl?: string;
+  thumbnailTrendingUrl?: string;
   tags: string[];
   authorUserId: string;
   status: PostStatus;

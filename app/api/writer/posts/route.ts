@@ -27,6 +27,8 @@ export async function POST(request: NextRequest) {
       content: body.content,
       excerpt: body.excerpt,
       coverImageUrl: body.coverImageUrl,
+      thumbnailLatestUrl: body.thumbnailLatestUrl,
+      thumbnailTrendingUrl: body.thumbnailTrendingUrl,
       tags: Array.isArray(body.tags) ? body.tags : [],
       authorUserId: auth.user.id
     });

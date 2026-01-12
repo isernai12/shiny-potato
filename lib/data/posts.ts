@@ -18,6 +18,8 @@ export async function createPost(params: {
   content: string;
   excerpt: string;
   coverImageUrl?: string;
+  thumbnailLatestUrl?: string;
+  thumbnailTrendingUrl?: string;
   tags: string[];
   authorUserId: string;
 }) {
@@ -37,6 +39,8 @@ export async function createPost(params: {
     content: params.content,
     excerpt: params.excerpt,
     coverImageUrl: params.coverImageUrl || undefined,
+    thumbnailLatestUrl: params.thumbnailLatestUrl || undefined,
+    thumbnailTrendingUrl: params.thumbnailTrendingUrl || undefined,
     tags: params.tags,
     authorUserId: params.authorUserId,
     status: "draft",

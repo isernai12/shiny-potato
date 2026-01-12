@@ -16,6 +16,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [fullName, setFullName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -46,10 +47,27 @@ export default function ProfilePage() {
         return;
       }
     }
+    let updatedAvatarUrl = avatarUrl;
+    if (avatarFile) {
+      const formData = new FormData();
+      formData.append("file", avatarFile);
+      const uploadResponse = await fetch("/api/uploads", {
+        method: "POST",
+        body: formData
+      });
+      if (!uploadResponse.ok) {
+        const data = await uploadResponse.json();
+        setError(data.error || "Failed to upload avatar");
+        return;
+      }
+      const data = await uploadResponse.json();
+      updatedAvatarUrl = data.url;
+    }
+
     const response = await fetch("/api/profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, avatarUrl, password, confirmPassword })
+      body: JSON.stringify({ fullName, avatarUrl: updatedAvatarUrl, password, confirmPassword })
     });
     if (!response.ok) {
       const data = await response.json();
@@ -60,6 +78,7 @@ export default function ProfilePage() {
     setUser(data.user);
     setPassword("");
     setConfirmPassword("");
+    setAvatarFile(null);
     setMessage("Profile updated.");
   }
 
@@ -98,6 +117,15 @@ export default function ProfilePage() {
               className="input"
               value={avatarUrl}
               onChange={(event) => setAvatarUrl(event.target.value)}
+            />
+          </label>
+          <label className="stack" style={{ gap: 4 }}>
+            Upload Avatar
+            <input
+              className="input"
+              type="file"
+              accept="image/*"
+              onChange={(event) => setAvatarFile(event.target.files?.[0] ?? null)}
             />
           </label>
           <label className="stack" style={{ gap: 4 }}>

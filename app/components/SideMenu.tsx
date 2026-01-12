@@ -1,20 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
-export default function SideMenu() {
+type SideMenuProps = {
+  triggerIcon?: ReactNode;
+};
+
+export default function SideMenu({ triggerIcon }: SideMenuProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="side-menu">
       <button
-        className="button secondary"
+        className="icon-button"
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Open menu"
       >
-        Menu
+        {triggerIcon ?? "Menu"}
       </button>
       {open ? (
         <div className="side-menu__backdrop" onClick={() => setOpen(false)}>
