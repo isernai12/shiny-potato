@@ -179,13 +179,14 @@ html.dark .button.secondary {
   align-items: center;
 }
 
+/* ✅ FIXED: LEFT SLIDE DRAWER */
 .side-menu__backdrop {
   position: fixed;
   inset: 0;
   background: rgba(17, 24, 39, 0.4);
   display: flex;
-  justify-content: flex-end;
-  z-index: 50;
+  justify-content: flex-start;
+  z-index: 9999;
 }
 
 .side-menu__panel {
@@ -193,10 +194,22 @@ html.dark .button.secondary {
   height: 100%;
   background: white;
   padding: 20px;
-  box-shadow: -10px 0 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 10px 0 24px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+}
+
+.side-menu__panel.open {
+  transform: translateX(0);
+}
+
+html.dark .side-menu__panel {
+  background: #1e293b;
+  color: #e2e8f0;
 }
 
 .side-menu__header {
@@ -428,6 +441,7 @@ html.dark .comment {
     align-items: flex-start;
   }
 }
+
 .bookmark-toggle {
   border: none;
   background: transparent;
@@ -445,7 +459,6 @@ html.dark .comment {
   align-items: center;
   justify-content: space-between;
 }
-
 
 .table {
   width: 100%;
