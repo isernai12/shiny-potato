@@ -179,25 +179,40 @@ html.dark .button.secondary {
   align-items: center;
 }
 
-/* ✅ FIXED: LEFT SLIDE DRAWER */
+/* ✅ FIXED: TRUE FLOATING OVERLAY (covers whole page, top layer) */
 .side-menu__backdrop {
   position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.4);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(17, 24, 39, 0.45);
   display: flex;
   justify-content: flex-start;
-  z-index: 9999;
+  align-items: stretch;
+
+  /* absolutely top-most */
+  z-index: 2147483647;
+
+  /* notch safe area support */
+  padding-top: env(safe-area-inset-top);
 }
 
 .side-menu__panel {
-  width: min(320px, 80vw);
-  height: 100%;
-  background: white;
+  width: min(320px, 82vw);
+  height: 100vh;              /* ✅ full viewport height */
+  background: #ffffff;
   padding: 20px;
+  padding-top: calc(20px + env(safe-area-inset-top));
   box-shadow: 10px 0 24px rgba(0, 0, 0, 0.15);
+
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  overflow-y: auto;           /* ✅ if many links, it scrolls */
+  -webkit-overflow-scrolling: touch;
 
   transform: translateX(-100%);
   transition: transform 0.25s ease;
@@ -226,8 +241,12 @@ html.dark .side-menu__panel {
 
 .side-menu__links a {
   font-weight: 600;
-  padding: 8px 0;
+  padding: 10px 0;
   border-bottom: 1px solid #f3f4f6;
+}
+
+html.dark .side-menu__links a {
+  border-bottom: 1px solid #334155;
 }
 
 .blog-card {
