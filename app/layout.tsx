@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import { ReactNode } from "react";
 import Link from "next/link";
-import Header from "./components/Header";
+import SiteHeader from "./components/SiteHeader";
 import Tracker from "./components/Tracker";
 import Maintenance from "./components/Maintenance";
 import Suspended from "./components/Suspended";
@@ -39,7 +39,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="en" className={outfit.variable} suppressHydrationWarning>
       <body>
         <div className="pageBlur">
-          <Header />
+          <SiteHeader />
           <Tracker />
 
           {isSuspended ? <Suspended /> : null}
