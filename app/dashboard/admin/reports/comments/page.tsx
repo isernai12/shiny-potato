@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import styles from "./comments.module.css";
 
 type Report = {
   id: string;
@@ -36,13 +37,13 @@ export default function CommentReportsPage() {
   }
 
   return (
-    <main className="container stack">
-      <h1>Comment reports</h1>
-      <div className="card stack">
+    <main className={styles.page}>
+      <h1 className={styles.title}>Comment reports</h1>
+      <div className={styles.card}>
         {reports.length === 0 ? (
-          <p>No reports.</p>
+          <p className={styles.muted}>No reports.</p>
         ) : (
-          <table className="table">
+          <table className={styles.table}>
             <thead>
               <tr>
                 <th>Post</th>
@@ -56,7 +57,7 @@ export default function CommentReportsPage() {
               {reports.map((report) => (
                 <tr key={report.id}>
                   <td>
-                    <a className="button secondary" href={`/post/${report.postSlug}`}>
+                    <a className={styles.buttonSecondary} href={`/post/${report.postSlug}`}>
                       View post
                     </a>
                   </td>
@@ -64,7 +65,7 @@ export default function CommentReportsPage() {
                   <td>{report.status}</td>
                   <td>
                     <input
-                      className="input"
+                      className={styles.input}
                       value={note[report.id] || ""}
                       onChange={(event) =>
                         setNote((prev) => ({ ...prev, [report.id]: event.target.value }))
@@ -72,15 +73,15 @@ export default function CommentReportsPage() {
                     />
                   </td>
                   <td>
-                    <div className="stack" style={{ gap: 8 }}>
+                    <div className={styles.actionStack}>
                       <button
-                        className="button secondary"
+                        className={styles.buttonSecondary}
                         onClick={() => handleAction(report.id, "reject")}
                       >
                         Reject
                       </button>
                       <button
-                        className="button secondary"
+                        className={styles.buttonSecondary}
                         onClick={() => handleAction(report.id, "delete")}
                       >
                         Delete comment

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./profile.module.css";
 
 type User = {
   id: string;
@@ -93,10 +94,10 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <main className="container stack">
-        <h1>Profile</h1>
-        {error ? <div className="notice">{error}</div> : null}
-        <button className="button secondary" onClick={() => router.push("/auth/login")}>
+      <main className={styles.page}>
+        <h1 className={styles.title}>Profile</h1>
+        {error ? <div className={styles.notice}>{error}</div> : null}
+        <button className={styles.buttonSecondary} onClick={() => router.push("/auth/login")}>
           Go to login
         </button>
       </main>
@@ -104,74 +105,74 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="container stack">
-      <h1>Your Profile</h1>
-      {message ? <div className="notice">{message}</div> : null}
-      {error ? <div className="notice">{error}</div> : null}
-      <div className="card stack">
-        <p>Email (cannot change): {user.email}</p>
-        <form className="stack" onSubmit={handleSubmit}>
-          <label className="stack" style={{ gap: 4 }}>
+    <main className={styles.page}>
+      <h1 className={styles.title}>Your Profile</h1>
+      {message ? <div className={styles.notice}>{message}</div> : null}
+      {error ? <div className={styles.notice}>{error}</div> : null}
+      <div className={styles.card}>
+        <p className={styles.meta}>Email (cannot change): {user.email}</p>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <label className={styles.field}>
             Full Name
             <input
-              className="input"
+              className={styles.input}
               value={fullName}
               onChange={(event) => setFullName(event.target.value)}
               required
             />
           </label>
-          <label className="stack" style={{ gap: 4 }}>
+          <label className={styles.field}>
             Avatar URL (optional)
             <input
-              className="input"
+              className={styles.input}
               value={avatarUrl}
               onChange={(event) => setAvatarUrl(event.target.value)}
             />
           </label>
-          <label className="stack" style={{ gap: 4 }}>
+          <label className={styles.field}>
             Bio
             <textarea
-              className="textarea"
+              className={styles.textarea}
               rows={4}
               value={bio}
               onChange={(event) => setBio(event.target.value)}
             />
           </label>
-          <label className="stack" style={{ gap: 4 }}>
+          <label className={styles.field}>
             Upload Avatar
             <input
-              className="input"
+              className={styles.input}
               type="file"
               accept="image/*"
               onChange={(event) => setAvatarFile(event.target.files?.[0] ?? null)}
             />
           </label>
-          <label className="stack" style={{ gap: 4 }}>
+          <label className={styles.field}>
             New Password (optional)
             <input
-              className="input"
+              className={styles.input}
               type="password"
               minLength={8}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
           </label>
-          <label className="stack" style={{ gap: 4 }}>
+          <label className={styles.field}>
             Confirm New Password
             <input
-              className="input"
+              className={styles.input}
               type="password"
               minLength={8}
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
             />
           </label>
-          <button className="button" type="submit">
+          <button className={styles.button} type="submit">
             Save changes
           </button>
         </form>
       </div>
-      <button className="button secondary" onClick={() => router.push("/dashboard")}>
+      <button className={styles.buttonSecondary} onClick={() => router.push("/dashboard")}>
         Back to dashboard
       </button>
     </main>

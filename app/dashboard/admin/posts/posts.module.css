@@ -1,0 +1,80 @@
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--softBorder);
+}
+
+.table th {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.buttonSecondary {
+  border: 1px solid var(--softBorder);
+  background: transparent;
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buttonSecondary:hover {
+  background: var(--soft);
+}
+
+.input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--softBorder);
+  background: transparent;
+  color: var(--text);
+}
+
+.actionStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notice {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(14, 116, 144, 0.12);
+  border: 1px solid rgba(14, 116, 144, 0.2);
+}
+
+.muted {
+  color: var(--muted);
+}

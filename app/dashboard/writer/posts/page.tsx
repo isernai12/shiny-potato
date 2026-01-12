@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./posts.module.css";
 
 type Post = {
   id: string;
@@ -37,10 +38,10 @@ export default function WriterPostsPage() {
 
   if (isAdmin) {
     return (
-      <main className="container stack">
-        <h1>Manage posts</h1>
-        <p>Admin accounts cannot manage posts.</p>
-        <button className="button secondary" onClick={() => router.push("/dashboard/admin")}>
+      <main className={styles.page}>
+        <h1 className={styles.title}>Manage posts</h1>
+        <p className={styles.muted}>Admin accounts cannot manage posts.</p>
+        <button className={styles.buttonSecondary} onClick={() => router.push("/dashboard/admin")}>
           Go to admin dashboard
         </button>
       </main>
@@ -70,16 +71,16 @@ export default function WriterPostsPage() {
   }
 
   return (
-    <main className="container stack">
-      <h1>Manage posts</h1>
-      {message ? <div className="notice">{message}</div> : null}
-      {error ? <div className="notice">{error}</div> : null}
-      <div className="stack" style={{ gap: 8 }}>
-        <div className="filter-bar">
+    <main className={styles.page}>
+      <h1 className={styles.title}>Manage posts</h1>
+      {message ? <div className={styles.notice}>{message}</div> : null}
+      {error ? <div className={styles.noticeError}>{error}</div> : null}
+      <div className={styles.filterWrap}>
+        <div className={styles.filterBar}>
           {(["all", "published", "pending", "draft"] as Filter[]).map((key) => (
             <button
               key={key}
-              className={`button secondary ${filter === key ? "active" : ""}`}
+              className={`${styles.buttonSecondary} ${filter === key ? styles.active : ""}`}
               type="button"
               onClick={() => setFilter(key)}
             >
@@ -88,11 +89,11 @@ export default function WriterPostsPage() {
           ))}
         </div>
       </div>
-      <div className="card stack">
+      <div className={styles.card}>
         {filtered.length === 0 ? (
-          <p>No posts found.</p>
+          <p className={styles.muted}>No posts found.</p>
         ) : (
-          <table className="table">
+          <table className={styles.table}>
             <thead>
               <tr>
                 <th>Title</th>
@@ -110,7 +111,7 @@ export default function WriterPostsPage() {
                   <td>
                     {post.status === "draft" ? (
                       <button
-                        className="button secondary"
+                        className={styles.buttonSecondary}
                         type="button"
                         onClick={() => handleSubmit(post.id)}
                       >
@@ -124,7 +125,7 @@ export default function WriterPostsPage() {
           </table>
         )}
       </div>
-      <button className="button secondary" onClick={() => router.push("/dashboard/writer")}>
+      <button className={styles.buttonSecondary} onClick={() => router.push("/dashboard/writer")}>
         Back
       </button>
     </main>

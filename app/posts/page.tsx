@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { readPosts } from "../../lib/data/posts";
 import { readUsers } from "../../lib/data/users";
+import styles from "./posts.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -22,20 +23,22 @@ export default async function PostsPage({
   const pageCount = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
 
   return (
-    <main className="container stack">
-      <h1>All posts</h1>
+    <main className={styles.page}>
+      <h1 className={styles.title}>All posts</h1>
       {paged.length === 0 ? (
-        <p>No posts found.</p>
+        <p className={styles.empty}>No posts found.</p>
       ) : (
-        <div className="stack">
+        <div className={styles.list}>
           {paged.map((post) => {
             const author = users.records.find((user) => user.id === post.authorUserId);
             return (
-              <article key={post.id} className="card stack">
-                <h3>{post.title}</h3>
-                <p>By {author?.fullName ?? "Unknown"}</p>
-                <p>{post.excerpt}</p>
-                <Link className="button secondary" href={`/post/${post.slug}`}>
+              <article key={post.id} className={styles.card}>
+                <div className={styles.cardBody}>
+                  <h3 className={styles.cardTitle}>{post.title}</h3>
+                  <p className={styles.cardMeta}>By {author?.fullName ?? "Unknown"}</p>
+                  <p className={styles.cardExcerpt}>{post.excerpt}</p>
+                </div>
+                <Link className={styles.buttonSecondary} href={`/post/${post.slug}`}>
                   Read
                 </Link>
               </article>
@@ -43,13 +46,15 @@ export default async function PostsPage({
           })}
         </div>
       )}
-      <div className="pager">
+      <div className={styles.pager}>
         {Array.from({ length: pageCount }).map((_, index) => {
           const pageNumber = index + 1;
           return (
             <Link
               key={pageNumber}
-              className={`button secondary ${pageNumber === currentPage ? "active" : ""}`}
+              className={`${styles.buttonSecondary} ${
+                pageNumber === currentPage ? styles.active : ""
+              }`}
               href={`/posts?page=${pageNumber}`}
             >
               {pageNumber}

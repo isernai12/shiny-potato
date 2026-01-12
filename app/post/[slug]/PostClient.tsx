@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import styles from "./post.module.css";
 
 type User = {
   id: string;
@@ -161,86 +162,90 @@ export default function PostClient({
   }, [users]);
 
   return (
-    <main className="container stack">
-      <article className="card stack">
-        <h1>{post.title}</h1>
-        <p>
-          By{" "}
-          {author ? <Link href={`/writer/${author.id}`}>{author.fullName}</Link> : "Unknown"} ·{" "}
-          {new Date(post.createdAt).toLocaleDateString()}
-        </p>
-        <p>{post.excerpt}</p>
-        <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>{post.content}</pre>
-        <div className="post-reactions">
+    <main className={styles.page}>
+      <article className={styles.card}>
+        <div className={styles.cardHeader}>
+          <h1 className={styles.title}>{post.title}</h1>
+          <p className={styles.meta}>
+            By{" "}
+            {author ? <Link href={`/writer/${author.id}`}>{author.fullName}</Link> : "Unknown"} ·{" "}
+            {new Date(post.createdAt).toLocaleDateString()}
+          </p>
+        </div>
+        <p className={styles.excerpt}>{post.excerpt}</p>
+        <pre className={styles.content}>{post.content}</pre>
+        <div className={styles.reactions}>
           <button
-            className={`button secondary ${liked ? "active" : ""}`}
+            className={`${styles.buttonSecondary} ${liked ? styles.active : ""}`}
             type="button"
             onClick={toggleLove}
           >
             Love ({likes.length})
           </button>
-          <div className="stack" style={{ gap: 8 }}>
+          <div className={styles.reportStack}>
             <input
-              className="input"
+              className={styles.input}
               placeholder="Report reason"
               value={reportReason}
               onChange={(event) => setReportReason(event.target.value)}
             />
-            <button className="button secondary" type="button" onClick={reportPost}>
+            <button className={styles.buttonSecondary} type="button" onClick={reportPost}>
               Report post
             </button>
           </div>
-          {error ? <span className="error-text">{error}</span> : null}
+          {error ? <span className={styles.errorText}>{error}</span> : null}
         </div>
       </article>
 
-      <section className="card stack">
-        <h2>Comments</h2>
+      <section className={styles.card}>
+        <h2 className={styles.sectionTitle}>Comments</h2>
         {viewer ? (
-          <form className="stack" onSubmit={addComment}>
+          <form className={styles.commentForm} onSubmit={addComment}>
             <textarea
-              className="textarea"
+              className={styles.textarea}
               rows={3}
               placeholder="Write a comment"
               value={commentText}
               onChange={(event) => setCommentText(event.target.value)}
               required
             />
-            <button className="button" type="submit">
+            <button className={styles.button} type="submit">
               Post comment
             </button>
           </form>
         ) : (
-          <p>Please log in to comment.</p>
+          <p className={styles.muted}>Please log in to comment.</p>
         )}
-        <div className="stack">
+        <div className={styles.commentList}>
           {comments.length === 0 ? (
-            <p>No comments yet.</p>
+            <p className={styles.muted}>No comments yet.</p>
           ) : (
             comments.map((comment) => {
               const commentAuthor = commentAuthors.get(comment.userId);
               const commentLiked = viewer ? comment.likes.includes(viewer.id) : false;
               return (
-                <div key={comment.id} className="comment">
-                  <div>
+                <div key={comment.id} className={styles.comment}>
+                  <div className={styles.commentBody}>
                     <strong>{commentAuthor?.fullName ?? "User"}</strong>
                     <p>{comment.content}</p>
                     <small>{new Date(comment.createdAt).toLocaleString()}</small>
                   </div>
-                  <button
-                    className={`button secondary ${commentLiked ? "active" : ""}`}
-                    type="button"
-                    onClick={() => toggleCommentLove(comment.id)}
-                  >
-                    Love ({comment.likes.length})
-                  </button>
-                  <button
-                    className="button secondary"
-                    type="button"
-                    onClick={() => reportComment(comment.id)}
-                  >
-                    Report
-                  </button>
+                  <div className={styles.commentActions}>
+                    <button
+                      className={`${styles.buttonSecondary} ${commentLiked ? styles.active : ""}`}
+                      type="button"
+                      onClick={() => toggleCommentLove(comment.id)}
+                    >
+                      Love ({comment.likes.length})
+                    </button>
+                    <button
+                      className={styles.buttonSecondary}
+                      type="button"
+                      onClick={() => reportComment(comment.id)}
+                    >
+                      Report
+                    </button>
+                  </div>
                 </div>
               );
             })
@@ -248,17 +253,19 @@ export default function PostClient({
         </div>
       </section>
 
-      <section className="stack">
-        <div className="section-header">
-          <h2>Related blogs</h2>
-          <span className="badge">{post.category}</span>
+      <section className={styles.related}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Related blogs</h2>
+          <span className={styles.badge}>{post.category}</span>
         </div>
-        <div className="grid two">
+        <div className={styles.grid}>
           {related.map((item) => (
-            <div className="card stack" key={item.id}>
-              <h3>{item.title}</h3>
-              <p>{item.excerpt}</p>
-              <Link className="button secondary" href={`/post/${item.slug}`}>
+            <div className={styles.card} key={item.id}>
+              <div className={styles.cardBody}>
+                <h3 className={styles.cardTitle}>{item.title}</h3>
+                <p className={styles.cardExcerpt}>{item.excerpt}</p>
+              </div>
+              <Link className={styles.buttonSecondary} href={`/post/${item.slug}`}>
                 Read
               </Link>
             </div>

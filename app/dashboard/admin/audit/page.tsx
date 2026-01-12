@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import styles from "./audit.module.css";
 
 type Entry = {
   id: string;
@@ -24,13 +25,13 @@ export default function AuditLogPage() {
   }, []);
 
   return (
-    <main className="container stack">
-      <h1>Audit log</h1>
-      <div className="card stack">
+    <main className={styles.page}>
+      <h1 className={styles.title}>Audit log</h1>
+      <div className={styles.card}>
         {entries.length === 0 ? (
-          <p>No audit entries yet.</p>
+          <p className={styles.muted}>No audit entries yet.</p>
         ) : (
-          <table className="table">
+          <table className={styles.table}>
             <thead>
               <tr>
                 <th>Action</th>

@@ -1,0 +1,55 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--softBorder);
+  border-radius: 12px;
+  background: var(--soft);
+}
+
+.fieldLabel {
+  font-weight: 600;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+}
+
+.notice {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(14, 116, 144, 0.12);
+  border: 1px solid rgba(14, 116, 144, 0.2);
+}
+
+.muted {
+  color: var(--muted);
+}
