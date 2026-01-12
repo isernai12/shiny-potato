@@ -88,6 +88,7 @@ body.hasOverlay .pageBlur {
   width: 20px;
   height: 20px;
   display: block;
+  stroke-width: 1.5; /* ✅ আগের মতো পাতলা */
 }
 
 /* ===== Header ===== */
