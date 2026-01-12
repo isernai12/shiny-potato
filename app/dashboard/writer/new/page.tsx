@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CATEGORIES } from "../../../lib/categories";
+import { CATEGORIES } from "../../../../lib/categories";
 
 export default function NewPostPage() {
   const router = useRouter();
