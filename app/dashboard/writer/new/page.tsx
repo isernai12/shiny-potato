@@ -115,6 +115,7 @@ export default function NewPostPage() {
             <li>Start each section with a TOC marker (example below).</li>
             <li>Keep the title inside angle brackets.</li>
             <li>Write your HTML or plain text after the marker.</li>
+            <li>Optional intro: use <code>type: into &lt;Intro title&gt;</code> to add an intro section.</li>
           </ol>
           <div className={styles.tocHint}>
             <span>Example:</span>
@@ -214,6 +215,7 @@ export default function NewPostPage() {
             <div className={styles.tocHint}>
               <span>Remember to use:</span>
               <code>type: toc &lt;Why Python?&gt;</code>
+              <code>type: into &lt;Intro&gt;</code>
             </div>
           </div>
         </div>

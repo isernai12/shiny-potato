@@ -5,12 +5,15 @@ import Link from "next/link";
 import {
   Bookmark,
   BookmarkCheck,
+  BookOpen,
   Calendar,
   ChevronDown,
   Clock,
   Flag,
   Heart,
+  Home,
   MessageCircle,
+  Newspaper,
 } from "lucide-react";
 import styles from "./post.module.css";
 
@@ -88,7 +91,7 @@ function normalizeContent(raw: string) {
 
 function parseContent(content: string): TocSection[] {
   const lines = content.replace(/\r\n/g, "\n").split("\n");
-  const marker = /^\s*type\s*:\s*toc\s*<\s*([^>]+?)\s*>\s*$/i;
+  const marker = /^\s*type\s*:\s*(toc|into|intro)\s*<\s*([^>]+?)\s*>\s*$/i;
   const sections: { title: string; html: string }[] = [];
   let current = { title: "Introduction", html: "" };
   let sawMarker = false;
@@ -104,7 +107,7 @@ function parseContent(content: string): TocSection[] {
     if (match) {
       sawMarker = true;
       pushCurrent();
-      current = { title: match[1].trim() || "Section", html: "" };
+      current = { title: match[2].trim() || "Section", html: "" };
       return;
     }
     current.html += `${line}\n`;
@@ -171,6 +174,7 @@ export default function PostClient({
   const tocRef = useRef<HTMLDivElement | null>(null);
   const tocButtonRef = useRef<HTMLButtonElement | null>(null);
   const ringRef = useRef<SVGPathElement | null>(null);
+  const trackerRef = useRef<HTMLDivElement | null>(null);
 
   const tocSections = useMemo(() => parseContent(post.content || ""), [post.content]);
 
@@ -196,6 +200,67 @@ export default function PostClient({
       setViewer(data.user ?? null);
     }
     load();
+  }, []);
+
+  useEffect(() => {
+    const body = document.body;
+    body.classList.add("postDetailPage");
+    let lastY = Math.max(0, window.scrollY || 0);
+    let ticking = false;
+    let compact = false;
+    let lastToggle = 0;
+    const COMPACT_ON = 90;
+    const EXPAND_AT = 35;
+    const DELTA = 2;
+    const COOLDOWN = 180;
+
+    function updateStackHeight() {
+      const header = document.querySelector<HTMLElement>(".writoHeader");
+      const headerHeight = body.classList.contains("compactHeader")
+        ? 0
+        : Math.round(header?.getBoundingClientRect().height || 0);
+      const trackerHeight = Math.round(trackerRef.current?.getBoundingClientRect().height || 0);
+      const stack = Math.max(44, headerHeight + trackerHeight);
+      document.documentElement.style.setProperty("--stackH", `${stack}px`);
+    }
+
+    function setCompact(next: boolean) {
+      const now = performance.now();
+      if (next === compact) return;
+      if (now - lastToggle < COOLDOWN) return;
+      compact = next;
+      body.classList.toggle("compactHeader", compact);
+      lastToggle = now;
+      setObserverKey((value) => value + 1);
+      updateStackHeight();
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = Math.max(0, window.scrollY || 0);
+        const d = y - lastY;
+        if (y <= EXPAND_AT) {
+          setCompact(false);
+        } else {
+          if (d > DELTA && y >= COMPACT_ON) setCompact(true);
+          if (d < -DELTA) setCompact(false);
+        }
+        lastY = y;
+        ticking = false;
+        updateStackHeight();
+      });
+    }
+
+    updateStackHeight();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateStackHeight, { passive: true });
+    return () => {
+      body.classList.remove("postDetailPage", "compactHeader");
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", updateStackHeight);
+    };
   }, []);
 
   useEffect(() => {
@@ -242,8 +307,12 @@ export default function PostClient({
     const nodes = Array.from(root.querySelectorAll<HTMLElement>("[data-track='true']"));
     if (!nodes.length) return;
 
-    const headerHeight = 56;
-    const rootMargin = `-${headerHeight + 24}px 0px -70% 0px`;
+    const header = document.querySelector<HTMLElement>(".writoHeader");
+    const headerHeight = document.body.classList.contains("compactHeader")
+      ? 0
+      : Math.round(header?.getBoundingClientRect().height || 0);
+    const trackerHeight = Math.round(trackerRef.current?.getBoundingClientRect().height || 0);
+    const rootMargin = `-${headerHeight + trackerHeight + 24}px 0px -70% 0px`;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -400,8 +469,13 @@ export default function PostClient({
     if (!root) return;
     const section = root.querySelector<HTMLElement>(`#${CSS.escape(id)}`);
     if (!section) return;
-    const headerHeight = 56;
-    const top = window.scrollY + section.getBoundingClientRect().top - headerHeight - 12;
+    const header = document.querySelector<HTMLElement>(".writoHeader");
+    const headerHeight = document.body.classList.contains("compactHeader")
+      ? 0
+      : Math.round(header?.getBoundingClientRect().height || 0);
+    const trackerHeight = Math.round(trackerRef.current?.getBoundingClientRect().height || 0);
+    const offset = headerHeight + trackerHeight + 12;
+    const top = window.scrollY + section.getBoundingClientRect().top - offset;
     window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   }
 
@@ -418,7 +492,7 @@ export default function PostClient({
 
   return (
     <main className={styles.postPage} ref={rootRef}>
-      <div className={styles.trackerBar}>
+      <div className={styles.trackerBar} ref={trackerRef}>
         <div className={styles.trackerInner}>
           <div className={styles.progressWrap} aria-label="Reading progress">
             <svg className={styles.progressSvg} viewBox="0 0 36 36" aria-hidden="true">
@@ -476,13 +550,19 @@ export default function PostClient({
       <div className={styles.pageSection}>
         <div className={styles.breadcrumb} aria-label="Page location">
           <div className={`${styles.bLine} ${styles.bLineTop}`}>
-            <span className={styles.bIcon}>🏠</span>
+            <span className={styles.bIcon}>
+              <Home size={14} />
+            </span>
             <span className={styles.metaDot}>/</span>
-            <span className={styles.bIcon}>📰</span>
+            <span className={styles.bIcon}>
+              <Newspaper size={14} />
+            </span>
             <span>{post.category}</span>
           </div>
           <div className={`${styles.bLine} ${styles.bLineSub}`}>
-            <span className={styles.bIcon}>📘</span>
+            <span className={styles.bIcon}>
+              <BookOpen size={14} />
+            </span>
             <strong>{post.title}</strong>
           </div>
         </div>
