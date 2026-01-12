@@ -1,0 +1,338 @@
+.wrap {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 14px;
+}
+
+/* ===== Card ===== */
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+  overflow: hidden;
+}
+
+:global(html.dark) .panel {
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.45);
+}
+
+.panelHead {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+:global(html.dark) .panelHead {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.1px;
+}
+
+.panelTitle svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.7;
+}
+
+.panelBody {
+  padding: 14px 16px;
+}
+
+/* ===== Alerts (flash) ===== */
+.alert {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+:global(html.dark) .alert {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.alertOk {
+  border-color: rgba(34, 197, 94, 0.28);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.alertError {
+  border-color: rgba(239, 68, 68, 0.28);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ===== Top profile row ===== */
+.profileTop {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+
+.avatarBox {
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--softBorder);
+  background: rgba(15, 23, 42, 0.06);
+  position: relative;
+}
+
+:global(html.dark) .avatarBox {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.avatarBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.avatarBadge {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:global(html.dark) .avatarBadge {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 10, 10, 0.7);
+}
+
+.avatarBadge svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.7;
+}
+
+/* ===== Buttons ===== */
+.btnRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--softBorder);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:global(html.dark) .btn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.7;
+}
+
+.primary {
+  background: #0f172a;
+  color: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.3);
+}
+
+:global(html.dark) .primary {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--text);
+}
+
+.danger {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.24);
+  color: var(--text);
+}
+
+/* ===== Fields ===== */
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.1px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.label svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.7;
+}
+
+.mutedSmall {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 11px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: 0.12s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  transform: translateY(-1px);
+}
+
+:global(html.dark) .input,
+:global(html.dark) .textarea {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.countRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.twoCols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sectionTitle {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.sectionTitle span {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 11px;
+}
+
+/* ===== Action bar ===== */
+.actionBar {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 520px) {
+  .twoCols {
+    grid-template-columns: 1fr;
+  }
+
+  .profileTop {
+    grid-template-columns: 86px 1fr;
+  }
+
+  .avatarBox {
+    width: 86px;
+    height: 86px;
+  }
+
+  .actionBar {
+    justify-content: stretch;
+  }
+
+  .actionBar .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
