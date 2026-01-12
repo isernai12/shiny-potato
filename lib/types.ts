@@ -1,11 +1,26 @@
 export type Role = "admin" | "user";
 
+export type SocialLinks = {
+  facebook?: string;
+  x?: string;
+  instagram?: string;
+  youtube?: string;
+  github?: string;
+  website?: string;
+};
+
 export type User = {
   id: string;
   email: string;
   fullName: string;
   avatarUrl?: string;
   bio?: string;
+
+  // ✅ NEW
+  socials?: SocialLinks;
+  hobbies?: string[]; // max 3
+  categories?: string[]; // max 3
+
   passwordHash: string;
   role: Role;
   suspended?: boolean;
