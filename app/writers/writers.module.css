@@ -1,0 +1,237 @@
+.writoPageWrap {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 14px;
+}
+
+.writoHero {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.04);
+}
+
+.writoHeroTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.writoTitle {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+}
+
+.writoSub {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 38ch;
+}
+
+.writoHeroActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.writoPillBtn {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--softBorder);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.writoPillBtn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.7;
+}
+
+.writoSearchWrap {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.writoToolInput {
+  flex: 1;
+  min-width: 200px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid var(--softBorder);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0 12px;
+  font-size: 12px;
+  outline: none;
+  color: var(--text);
+  font-family: inherit;
+}
+
+.writoInfoRow {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.writoInfoChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px;
+  border-radius: 14px;
+  background: var(--soft);
+  border: 1px solid var(--softBorder);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.writoInfoChip svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.6;
+}
+
+.writoSectionTitle {
+  margin: 16px 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.15px;
+}
+
+.writoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.writerCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px 12px;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.writerAvatar {
+  width: 66px;
+  height: 66px;
+  border-radius: 999px;
+  border: 1px solid var(--softBorder);
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.06);
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.writerAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.writerName {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--text);
+  width: 100%;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+  word-break: break-word;
+}
+
+.writerPostsRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.writerPostsRow svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.6;
+}
+
+.writerBio {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 26ch;
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.emptyState {
+  background: var(--card);
+  border: 1px dashed var(--softBorder);
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (max-width: 520px) {
+  .writoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .writerAvatar {
+    width: 62px;
+    height: 62px;
+  }
+
+  .writerCard {
+    padding: 13px 10px;
+  }
+
+  .writerName {
+    font-size: 14px;
+  }
+}

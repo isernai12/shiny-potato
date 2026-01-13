@@ -294,7 +294,7 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
     approvedPosts.forEach((p) => counts.set(p.authorUserId, (counts.get(p.authorUserId) || 0) + 1));
     return [...counts.entries()]
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
+      .slice(0, 5)
       .map(([userId]) => users.find((u) => u.id === userId))
       .filter(Boolean) as User[];
   }, [approvedPosts, users]);
@@ -464,7 +464,7 @@ export default function HomeClient({ posts, users }: { posts: Post[]; users: Use
               <section className={styles.topWriters}>
                 <div className={styles.writersHeader}>
                   <div className={styles.writersTitle}>Top Writers</div>
-                  <Link className={styles.writersViewAll} href="/posts">
+                  <Link className={styles.writersViewAll} href="/writers">
                     View all
                   </Link>
                 </div>

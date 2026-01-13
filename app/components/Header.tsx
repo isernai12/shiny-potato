@@ -247,10 +247,10 @@ export default function Header() {
             <span>Latest</span>
           </Link>
 
-          <button className="writoMenuItem" type="button" disabled aria-disabled="true">
+          <Link className="writoMenuItem" href="/categories" onClick={closeAll}>
             <LayoutGrid />
             <span>Categories</span>
-          </button>
+          </Link>
 
           <button className="writoMenuItem" type="button" disabled aria-disabled="true">
             <Flame />
