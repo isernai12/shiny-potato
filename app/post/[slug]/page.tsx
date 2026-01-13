@@ -2,19 +2,22 @@ import { notFound } from "next/navigation";
 import { readPosts } from "../../../lib/data/posts";
 import { readUsers } from "../../../lib/data/users";
 import PostClient from "./PostClient";
+import PostPageMount from "./PostPageMount";
 
 export const dynamic = "force-dynamic";
 
 export default async function PostPage({ params }: { params: { slug: string } }) {
   const data = await readPosts();
   const users = await readUsers();
+
   const post = data.records.find(
     (record) => record.slug === params.slug && record.status === "approved"
   );
-  if (!post) {
-    notFound();
-  }
+
+  if (!post) notFound();
+
   const author = users.records.find((user) => user.id === post.authorUserId);
+
   const related = data.records
     .filter(
       (record) =>
@@ -24,5 +27,10 @@ export default async function PostPage({ params }: { params: { slug: string } })
     )
     .slice(0, 5);
 
-  return <PostClient post={post} author={author} related={related} users={users.records} />;
+  return (
+    <>
+      <PostPageMount />
+      <PostClient post={post} author={author} related={related} users={users.records} />
+    </>
+  );
 }
