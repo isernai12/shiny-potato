@@ -1,0 +1,27 @@
+.postLayout {
+  background: #f6f7fb;
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+.postLayout :global(.writoHeader) {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: none;
+}
+
+.postLayout :global(.writoBrand) {
+  color: #1f2937;
+}
+
+.postLayout :global(.writoFooter) {
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 0;
+}
+
+.postLayout :global(.writoFooterMeta),
+.postLayout :global(.writoFooterLink),
+.postLayout :global(.writoFooterDot) {
+  color: #64748b;
+}

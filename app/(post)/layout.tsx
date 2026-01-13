@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import { getUserFromSessionId } from "../../lib/auth";
 import { readSettings } from "../../lib/data/settings";
 import { Github, Facebook, Twitter, Youtube } from "lucide-react";
+import styles from "./post-layout.module.css";
 
 export default async function PostLayout({ children }: { children: ReactNode }) {
   const cookieStore = cookies();
@@ -22,7 +23,7 @@ export default async function PostLayout({ children }: { children: ReactNode }) 
   const year = new Date().getFullYear();
 
   return (
-    <div className="pageBlur">
+    <div className={`${styles.postLayout} pageBlur`}>
       <Header />
       <Tracker />
 
