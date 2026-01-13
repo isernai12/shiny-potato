@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FileText, PenLine, Search, Sparkles, Users } from "lucide-react";
-import { readPosts } from "../../lib/data/posts";
-import { readUsers } from "../../lib/data/users";
+import { readPosts } from "../../../lib/data/posts";
+import { readUsers } from "../../../lib/data/users";
 import styles from "./writers.module.css";
 
 export const dynamic = "force-dynamic";

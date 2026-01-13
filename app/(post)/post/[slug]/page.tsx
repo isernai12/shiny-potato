@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { readPosts } from "../../../lib/data/posts";
-import { readUsers } from "../../../lib/data/users";
+import { readPosts } from "../../../../lib/data/posts";
+import { readUsers } from "../../../../lib/data/users";
 import PostClient from "./PostClient";
 
 export const dynamic = "force-dynamic";
