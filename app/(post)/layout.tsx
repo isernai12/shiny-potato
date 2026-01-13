@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 import Link from "next/link";
-import Header from "../components/Header";
-import Tracker from "../components/Tracker";
-import Maintenance from "../components/Maintenance";
-import Suspended from "../components/Suspended";
+import Header from "./components/Header";
+import Tracker from "./components/Tracker";
+import Maintenance from "./components/Maintenance";
+import Suspended from "./components/Suspended";
 import { cookies } from "next/headers";
 import { getUserFromSessionId } from "../../lib/auth";
 import { readSettings } from "../../lib/data/settings";
