@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { readPosts } from "../../../lib/data/posts";
 import { readUsers } from "../../../lib/data/users";
 import PostClient from "./PostClient";
-import PostPageMount from "./PostPageMount";
 
 export const dynamic = "force-dynamic";
 
@@ -27,10 +26,5 @@ export default async function PostPage({ params }: { params: { slug: string } })
     )
     .slice(0, 5);
 
-  return (
-    <>
-      <PostPageMount />
-      <PostClient post={post} author={author} related={related} users={users.records} />
-    </>
-  );
+  return <PostClient post={post} author={author} related={related} users={users.records} />;
 }
