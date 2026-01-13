@@ -1,7 +1,7 @@
-import { readPosts } from "../lib/data/posts";
-import { filterPostsByStatus, sortPostsByDate } from "../lib/data/posts";
-import { readUsers } from "../lib/data/users";
-import HomeClient from "./components/HomeClient";
+import { readPosts } from "../../lib/data/posts";
+import { filterPostsByStatus, sortPostsByDate } from "../../lib/data/posts";
+import { readUsers } from "../../lib/data/users";
+import HomeClient from "../components/HomeClient";
 
 export const dynamic = "force-dynamic";
 

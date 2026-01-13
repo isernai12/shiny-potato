@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Calendar, Clock } from "lucide-react";
-import { readPosts } from "../../../../lib/data/posts";
-import { readUsers } from "../../../../lib/data/users";
+import { readPosts } from "../../../../../lib/data/posts";
+import { readUsers } from "../../../../../lib/data/users";
 import styles from "../writer-profile.module.css";
 
 export const dynamic = "force-dynamic";

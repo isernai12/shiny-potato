@@ -1,24 +1,21 @@
 import Link from "next/link";
 import {
+  ArrowLeft,
   ArrowRight,
   Calendar,
   Clock,
+  FileText,
   Layers,
   Moon,
   Search,
   Sun,
   Tag
 } from "lucide-react";
-import { readPosts } from "../../lib/data/posts";
-import { readUsers } from "../../lib/data/users";
-import styles from "./categories.module.css";
+import { readPosts } from "../../../../lib/data/posts";
+import { readUsers } from "../../../../lib/data/users";
+import styles from "./view-all.module.css";
 
 export const dynamic = "force-dynamic";
-
-type CategoryItem = {
-  name: string;
-  icon: JSX.Element;
-};
 
 function formatDate(iso: string) {
   const date = new Date(iso);
@@ -50,10 +47,18 @@ function buildQuery(params: Record<string, string | undefined>) {
   return query ? `?${query}` : "";
 }
 
-export default async function CategoriesPage({
+function getPageRange(current: number, total: number) {
+  const maxButtons = 5;
+  let start = Math.max(1, current - 2);
+  let end = Math.min(total, start + maxButtons - 1);
+  start = Math.max(1, end - maxButtons + 1);
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+}
+
+export default async function CategoryViewAllPage({
   searchParams
 }: {
-  searchParams: { cat?: string; q?: string };
+  searchParams: { cat?: string; q?: string; page?: string; per?: string };
 }) {
   const data = await readPosts();
   const users = await readUsers();
@@ -61,11 +66,9 @@ export default async function CategoriesPage({
   const categories = Array.from(new Set(posts.map((post) => post.category).filter(Boolean)));
   const activeCategory = searchParams.cat && categories.includes(searchParams.cat) ? searchParams.cat : "All";
   const query = (searchParams.q ?? "").trim().toLowerCase();
-
-  const categoryItems: CategoryItem[] = [
-    { name: "All", icon: categoryIcon("all") },
-    ...categories.map((name) => ({ name, icon: categoryIcon(name) }))
-  ];
+  const per = Number(searchParams.per ?? "20");
+  const perPage = per === 30 ? 30 : 20;
+  const page = Math.max(1, Number(searchParams.page ?? "1") || 1);
 
   const filtered = posts.filter((post) => {
     const byCategory = activeCategory === "All" ? true : post.category === activeCategory;
@@ -73,17 +76,22 @@ export default async function CategoriesPage({
     return byCategory && byQuery;
   });
 
-  const topPosts = filtered.slice(0, 6);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const currentPage = Math.min(page, totalPages);
+  const sliceStart = (currentPage - 1) * perPage;
+  const sliceEnd = sliceStart + perPage;
+  const visible = filtered.slice(sliceStart, sliceEnd);
+
+  const categoryItems = ["All", ...categories];
 
   return (
     <main className={styles.wrap}>
-      <section className={styles.hero}>
-        <div className={styles.heroTop}>
+      <section className={styles.top}>
+        <div className={styles.topRow}>
           <div>
-            <div className={styles.title}>Browse by Category</div>
+            <div className={styles.title}>View all posts</div>
             <div className={styles.sub}>
-              এখানে ২০–৩০+ ক্যাটাগরি থাকলেও স্ক্রলেবল ক্যাটাগরি বার দিয়ে সুন্দরভাবে কাজ করবে।
-              নিচে প্রতিটি পোস্টের সাথে রাইটারের ছবি + নাম থাকবে।
+              Category / search অনুযায়ী সব পোস্ট এখানে পেজিনেশনসহ দেখাবে।
             </div>
           </div>
 
@@ -93,19 +101,26 @@ export default async function CategoriesPage({
           </button>
         </div>
 
-        <form className={styles.tools} action="/categories" method="get">
+        <form className={styles.filters} action="/categories/view-all" method="get">
           <input
             className={styles.toolInput}
             type="search"
             name="q"
-            placeholder="Search posts by title"
+            placeholder="Search posts by title..."
             defaultValue={searchParams.q ?? ""}
           />
+          <select className={styles.select} name="per" defaultValue={String(perPage)}>
+            <option value="20">20 / page</option>
+            <option value="30">30 / page</option>
+          </select>
           <input type="hidden" name="cat" value={activeCategory} />
           <button className={styles.pillBtn} type="submit">
             <Search />
             <span>Search</span>
           </button>
+          <Link className={styles.pillBtn} href="/categories/view-all">
+            Reset
+          </Link>
         </form>
 
         <div className={styles.catBar} aria-label="Category bar">
@@ -113,83 +128,49 @@ export default async function CategoriesPage({
           <div className={styles.fadeR} />
           <div className={styles.catScroll}>
             {categoryItems.map((item) => {
-              const isActive = item.name === activeCategory;
+              const isActive = item === activeCategory;
               return (
                 <Link
-                  key={item.name}
-                  href={`/categories${buildQuery({
-                    cat: item.name === "All" ? undefined : item.name,
-                    q: searchParams.q
+                  key={item}
+                  href={`/categories/view-all${buildQuery({
+                    cat: item === "All" ? undefined : item,
+                    q: searchParams.q,
+                    per: String(perPage),
+                    page: "1"
                   })}`}
                   className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
                 >
-                  {item.icon}
-                  <span>{item.name}</span>
+                  {categoryIcon(item)}
+                  <span>{item}</span>
                 </Link>
               );
             })}
           </div>
         </div>
-
-        <div className={styles.mobileSelectRow}>
-          <form action="/categories" method="get" className={styles.tools}>
-            <select className={styles.select} name="cat" defaultValue={activeCategory}>
-              {categoryItems.map((item) => (
-                <option key={item.name} value={item.name}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-            <input type="hidden" name="q" value={searchParams.q ?? ""} />
-            <button className={styles.pillBtn} type="submit">
-              Apply
-            </button>
-            <Link className={styles.pillBtn} href="/categories">
-              Reset
-            </Link>
-          </form>
-        </div>
       </section>
 
-      <div className={styles.secHead}>
-        <div className={styles.secTitle}>Posts</div>
-        <div className={styles.secMeta}>
-          Showing: {activeCategory === "All" ? "All" : activeCategory}
-          {query ? ` • Search: "${searchParams.q}"` : ""}
+      <div className={styles.metaLine}>
+        <div className={styles.metaLeft}>
+          <span>
+            {categoryIcon(activeCategory)}
+            <span>{activeCategory}</span>
+          </span>
+          <span>
+            <FileText />
+            <span>{filtered.length} posts</span>
+          </span>
+        </div>
+        <div className={styles.metaRight}>
+          {query ? `Search: "${searchParams.q}" • ` : ""}Page {currentPage}/{totalPages}
         </div>
       </div>
 
-      <section className={styles.postsWrap}>
-        <div className={styles.postsHead}>
-          <div className={styles.postsHeadLeft}>
-            <div className={styles.activeCat}>
-              {categoryIcon(activeCategory)}
-              <span>{activeCategory}</span>
-            </div>
-            <div className={styles.smallHint}>
-              {activeCategory === "All"
-                ? "Top posts from all categories"
-                : `Top posts from ${activeCategory}`}
-            </div>
-          </div>
-
-          <Link
-            className={styles.miniBtn}
-            href={`/categories/view-all${buildQuery({
-              cat: activeCategory === "All" ? undefined : activeCategory,
-              q: searchParams.q
-            })}`}
-          >
-            <ArrowRight />
-            <span>View all</span>
-          </Link>
-        </div>
-
-        <div className={styles.postsBody}>
-          {topPosts.length === 0 ? (
+      <section className={styles.list}>
+        <div className={styles.listInner}>
+          {visible.length === 0 ? (
             <div className={styles.empty}>No posts found.</div>
           ) : (
-            topPosts.map((post) => {
+            visible.map((post) => {
               const author = users.records.find((user) => user.id === post.authorUserId);
               return (
                 <Link key={post.id} href={`/post/${post.slug}`} className={styles.postCard}>
@@ -213,6 +194,10 @@ export default async function CategoriesPage({
                         <Calendar />
                         <span>{formatDate(post.createdAt)}</span>
                       </span>
+                      <span className={styles.meta}>
+                        <Tag />
+                        <span>{post.category}</span>
+                      </span>
                     </div>
                     <div className={styles.authorRow}>
                       <div className={styles.authorLeft}>
@@ -235,6 +220,58 @@ export default async function CategoriesPage({
               );
             })
           )}
+        </div>
+
+        <div className={styles.pager}>
+          <div className={styles.pageBtns}>
+            <Link
+              className={styles.pageBtn}
+              aria-disabled={currentPage <= 1}
+              href={`/categories/view-all${buildQuery({
+                cat: activeCategory === "All" ? undefined : activeCategory,
+                q: searchParams.q,
+                per: String(perPage),
+                page: String(Math.max(1, currentPage - 1))
+              })}`}
+            >
+              <ArrowLeft />
+              <span>Prev</span>
+            </Link>
+            {getPageRange(currentPage, totalPages).map((pageNumber) => {
+              const isActive = pageNumber === currentPage;
+              return (
+                <Link
+                  key={pageNumber}
+                  className={`${styles.pageBtn} ${isActive ? styles.pageBtnActive : ""}`}
+                  href={`/categories/view-all${buildQuery({
+                    cat: activeCategory === "All" ? undefined : activeCategory,
+                    q: searchParams.q,
+                    per: String(perPage),
+                    page: String(pageNumber)
+                  })}`}
+                >
+                  {pageNumber}
+                </Link>
+              );
+            })}
+            <Link
+              className={styles.pageBtn}
+              aria-disabled={currentPage >= totalPages}
+              href={`/categories/view-all${buildQuery({
+                cat: activeCategory === "All" ? undefined : activeCategory,
+                q: searchParams.q,
+                per: String(perPage),
+                page: String(Math.min(totalPages, currentPage + 1))
+              })}`}
+            >
+              <span>Next</span>
+              <ArrowRight />
+            </Link>
+          </div>
+          <div className={styles.pagerInfo}>
+            {filtered.length === 0 ? "0" : sliceStart + 1}-{Math.min(sliceEnd, filtered.length)} of{" "}
+            {filtered.length} • {perPage}/page
+          </div>
         </div>
       </section>
     </main>
